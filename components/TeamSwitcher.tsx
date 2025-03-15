@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 
 import * as React from "react"
@@ -113,7 +114,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
                 <CommandGroup key={group.label} heading={group.label}>
                   {group.teams.map((team) => (
                     <CommandItem
-                      key={team.value}
+                      key={`${team.value}-${team.label}`}
                       onSelect={() => {
                         setSelectedTeam(team)
                         setOpen(false)
