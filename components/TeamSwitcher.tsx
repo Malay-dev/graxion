@@ -45,24 +45,24 @@ import {
 
 const groups = [
   {
-    label: "Personal Account",
+    label: "My Class",
     teams: [
       {
-        label: "Alicia Koch",
-        value: "personal",
+        label: "Class 10th - A",
+        value: "10A",
       },
     ],
   },
   {
-    label: "Teams",
+    label: "Other Classes",
     teams: [
       {
-        label: "Acme Inc.",
-        value: "acme-inc",
+        label: "Class 10th - B",
+        value: "10B",
       },
       {
-        label: "Monsters Inc.",
-        value: "monsters",
+        label: "Class 11th - A",
+        value: "11A",
       },
     ],
   },
