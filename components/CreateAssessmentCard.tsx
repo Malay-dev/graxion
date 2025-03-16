@@ -32,12 +32,12 @@ const CreateAssesmentCard = ({subject}: {subject: string}) => {
                 {renderIcon()}
             </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className='flex h-full items-center'>
             <div className='w-full flex items-center justify-center'> 
                 <PlusCircle size={72} />
             </div>
         </CardContent>
-        <CardFooter className='border-t'>            
+        <CardFooter className='border-t bottom-0'>            
             <Button className="w-full cursor-pointer"
               onClick={()=> {handleOnClick(subject)}}
             >
