@@ -2,7 +2,7 @@ import { CalendarIcon, CheckCircle2Icon, XCircleIcon } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { PlusCircle, Atom, Flask, MathOperations, Microscope } from "@phosphor-icons/react/dist/ssr";
+import { Atom, Flask, MathOperations, Microscope } from "@phosphor-icons/react/dist/ssr";
 
 interface AssessmentCardProps {
     id: string

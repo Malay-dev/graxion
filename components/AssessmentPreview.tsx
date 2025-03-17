@@ -25,6 +25,7 @@ export function AssessmentPreview({
     try {
       return format(new Date(dateString), "PPP")
     } catch (error) {
+      console.log(error);
       return dateString
     }
   }
