@@ -57,8 +57,8 @@ export default function AssessmentCard({
     };
 
     return (
-        <Card className="overflow-hidden border shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-4">
+        <Card className="overflow-hidden border shadow-lg cursor-pointer hover:border-white">
+            <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-4 space-y-0">
                 <div className="flex gap-2 justify-between items-start">
                     <div>
                         <CardTitle className="text-xl font-bold">{title}</CardTitle>
