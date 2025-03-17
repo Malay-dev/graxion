@@ -109,7 +109,7 @@ export default function AssessmentFormPopup({ children }: Readonly<{
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-[95vw] h-[95vh] overflow-y-auto">
+      <DialogContent className="!max-w-[95vw] h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">
             {currentStage === 1 && "Create Assessment - Details"}
