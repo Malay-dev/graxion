@@ -1,15 +1,11 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Check, ChevronsUpDown, PlusCircle } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronsUpDown, PlusCircle } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "./ui/avatar"
-import { Button } from "./ui/button"
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
 import {
   Command,
   CommandEmpty,
@@ -18,7 +14,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "./ui/command"
+} from "./ui/command";
 import {
   Dialog,
   DialogContent,
@@ -27,21 +23,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover"
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select"
+} from "./ui/select";
 
 const groups = [
   {
@@ -66,18 +58,20 @@ const groups = [
       },
     ],
   },
-]
+];
 
-type Team = (typeof groups)[number]["teams"][number]
+type Team = (typeof groups)[number]["teams"][number];
 
-type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+type PopoverTriggerProps = React.ComponentPropsWithoutRef<
+  typeof PopoverTrigger
+>;
 
 export default function TeamSwitcher({ className }: PopoverTriggerProps) {
-  const [open, setOpen] = React.useState(false)
-  const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
+  const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState<Team>(
     groups[0].teams[0]
-  )
+  );
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -88,8 +82,7 @@ export default function TeamSwitcher({ className }: PopoverTriggerProps) {
             role="combobox"
             aria-expanded={open}
             aria-label="Select a team"
-            className={cn("w-[200px] justify-between", className)}
-          >
+            className={cn("w-[200px] justify-between", className)}>
             <Avatar className="mr-2 h-5 w-5">
               <AvatarImage
                 src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
@@ -113,11 +106,10 @@ export default function TeamSwitcher({ className }: PopoverTriggerProps) {
                     <CommandItem
                       key={`${team.value}-${team.label}`}
                       onSelect={() => {
-                        setSelectedTeam(team)
-                        setOpen(false)
+                        setSelectedTeam(team);
+                        setOpen(false);
                       }}
-                      className="text-sm"
-                    >
+                      className="text-sm">
                       <Avatar className="mr-2 h-5 w-5">
                         <AvatarImage
                           src={`https://avatar.vercel.sh/${team.value}.png`}
@@ -146,10 +138,9 @@ export default function TeamSwitcher({ className }: PopoverTriggerProps) {
                 <DialogTrigger asChild>
                   <CommandItem
                     onSelect={() => {
-                      setOpen(false)
-                      setShowNewTeamDialog(true)
-                    }}
-                  >
+                      setOpen(false);
+                      setShowNewTeamDialog(true);
+                    }}>
                     <PlusCircle className="h-5 w-5" />
                     Create Team
                   </CommandItem>
@@ -204,5 +195,5 @@ export default function TeamSwitcher({ className }: PopoverTriggerProps) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
