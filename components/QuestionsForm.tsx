@@ -1,187 +1,226 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { v4 as uuidv4 } from "uuid"
-import { PlusCircle, Trash2, Edit, Save, Upload, Image } from "lucide-react"
+import { useState, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { v4 as uuidv4 } from "uuid";
+import { PlusCircle, Trash2, Edit, Save, Upload, Image } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import type { Question } from "./AssessmentForm"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import type { Question } from "./AssessmentForm";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const questionSchema = z.object({
   type: z.enum(["Short Answer", "Long Answer", "MCQ"], {
     required_error: "Please select a question type",
   }),
-  text: z.string().min(5, { message: "Question text must be at least 5 characters." }),
-  answerType: z.enum(["Text", "Image"], {
+  text: z
+    .string()
+    .min(5, { message: "Question text must be at least 5 characters." }),
+  answer_type: z.enum(["Text", "Image"], {
     required_error: "Please select an answer type",
   }),
   choices: z.array(z.string()).optional(),
-  imageUrl: z.string().optional(),
-})
+  image_url: z.string().optional(),
+});
 
 interface QuestionsFormProps {
-  initialQuestions: Question[]
-  onSubmit: (questions: Question[]) => void
-  onSaveProgress: () => void
+  initialQuestions: Question[];
+  onSubmit: (questions: Question[]) => void;
+  onSaveProgress: () => void;
 }
 
-export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: QuestionsFormProps) {
-  const [questions, setQuestions] = useState<Question[]>(initialQuestions || [])
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [choiceInputs, setChoiceInputs] = useState<string[]>(["", "", "", ""])
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+export function QuestionsForm({
+  initialQuestions,
+  onSubmit,
+  onSaveProgress,
+}: QuestionsFormProps) {
+  const [questions, setQuestions] = useState<Question[]>(
+    initialQuestions || []
+  );
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [choiceInputs, setChoiceInputs] = useState<string[]>(["", "", "", ""]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
       type: "Short Answer",
       text: "",
-      answerType: "Text",
+      answer_type: "Text",
       choices: [],
-      imageUrl: "",
+      image_url: "",
     },
-  })
+  });
 
-  const questionType = form.watch("type")
-  const answerType = form.watch("answerType")
+  const questionType = form.watch("type");
+  const answer_type = form.watch("answer_type");
 
   const handleAddQuestion = (values: z.infer<typeof questionSchema>) => {
     const newQuestion: Question = {
       id: editingId || uuidv4(),
       type: values.type,
       text: values.text,
-      answerType: values.answerType,
-      choices: values.type === "MCQ" ? choiceInputs.filter((choice) => choice.trim() !== "") : undefined,
-      imageUrl: imagePreview || undefined,
-    }
+      answer_type: values.answer_type,
+      choices:
+        values.type === "MCQ"
+          ? choiceInputs.filter((choice) => choice.trim() !== "")
+          : undefined,
+      image_url: imagePreview || undefined,
+      expected_answer: "",
+      marks: 1,
+    };
 
     if (editingId) {
-      setQuestions(questions.map((q) => (q.id === editingId ? newQuestion : q)))
-      setEditingId(null)
+      setQuestions(
+        questions.map((q) => (q.id === editingId ? newQuestion : q))
+      );
+      setEditingId(null);
     } else {
-      setQuestions([...questions, newQuestion])
+      setQuestions([...questions, newQuestion]);
     }
 
     form.reset({
       type: "Short Answer",
       text: "",
-      answerType: "Text",
+      answer_type: "Text",
       choices: [],
-      imageUrl: "",
-    })
-    setChoiceInputs(["", "", "", ""])
-    setImagePreview(null)
-  }
+      image_url: "",
+    });
+    setChoiceInputs(["", "", "", ""]);
+    setImagePreview(null);
+  };
 
   const handleEditQuestion = (question: Question) => {
-    setEditingId(question.id)
+    setEditingId(question.id);
     form.reset({
       type: question.type,
       text: question.text,
-      answerType: question.answerType,
+      answer_type: question.answer_type,
       choices: question.choices,
-      imageUrl: question.imageUrl,
-    })
-    setChoiceInputs(question.choices || ["", "", "", ""])
-    setImagePreview(question.imageUrl || null)
-  }
+      image_url: question.image_url,
+    });
+    setChoiceInputs(question.choices || ["", "", "", ""]);
+    setImagePreview(question.image_url || null);
+  };
 
   const handleDeleteQuestion = (id: string) => {
-    setQuestions(questions.filter((q) => q.id !== id))
+    setQuestions(questions.filter((q) => q.id !== id));
     if (editingId === id) {
-      setEditingId(null)
+      setEditingId(null);
       form.reset({
         type: "Short Answer",
         text: "",
-        answerType: "Text",
+        answer_type: "Text",
         choices: [],
-        imageUrl: "",
-      })
-      setChoiceInputs(["", "", "", ""])
-      setImagePreview(null)
+        image_url: "",
+      });
+      setChoiceInputs(["", "", "", ""]);
+      setImagePreview(null);
     }
-  }
+  };
 
   const handleCancelEdit = () => {
-    setEditingId(null)
+    setEditingId(null);
     form.reset({
       type: "Short Answer",
       text: "",
-      answerType: "Text",
+      answer_type: "Text",
       choices: [],
-      imageUrl: "",
-    })
-    setChoiceInputs(["", "", "", ""])
-    setImagePreview(null)
-  }
+      image_url: "",
+    });
+    setChoiceInputs(["", "", "", ""]);
+    setImagePreview(null);
+  };
 
   const handleChoiceChange = (index: number, value: string) => {
-    const newChoices = [...choiceInputs]
-    newChoices[index] = value
-    setChoiceInputs(newChoices)
+    const newChoices = [...choiceInputs];
+    newChoices[index] = value;
+    setChoiceInputs(newChoices);
     // Update the form field value
     form.setValue(
       "choices",
       newChoices.filter((c) => c.trim() !== ""),
-      { shouldValidate: true },
-    )
-  }
+      { shouldValidate: true }
+    );
+  };
 
   const handleAddChoice = () => {
-    const newChoices = [...choiceInputs, ""]
-    setChoiceInputs(newChoices)
+    const newChoices = [...choiceInputs, ""];
+    setChoiceInputs(newChoices);
     // Update the form field value
     form.setValue(
       "choices",
       newChoices.filter((c) => c.trim() !== ""),
-      { shouldValidate: true },
-    )
-  }
+      { shouldValidate: true }
+    );
+  };
 
   const handleRemoveChoice = (index: number) => {
-    const newChoices = [...choiceInputs]
-    newChoices.splice(index, 1)
-    setChoiceInputs(newChoices)
+    const newChoices = [...choiceInputs];
+    newChoices.splice(index, 1);
+    setChoiceInputs(newChoices);
     // Update the form field value
     form.setValue(
       "choices",
       newChoices.filter((c) => c.trim() !== ""),
-      { shouldValidate: true },
-    )
-  }
+      { shouldValidate: true }
+    );
+  };
 
   const handleSubmit = () => {
-    onSubmit(questions)
-  }
+    onSubmit(questions);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        const result = reader.result as string
-        setImagePreview(result)
-        form.setValue("imageUrl", result, { shouldValidate: true })
-      }
-      reader.readAsDataURL(file)
+        const result = reader.result as string;
+        setImagePreview(result);
+        form.setValue("image_url", result, { shouldValidate: true });
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const triggerFileInput = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="space-y-8">
@@ -189,9 +228,10 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
         <form
           id="question-form"
           onSubmit={form.handleSubmit(handleAddQuestion)}
-          className="space-y-6 border rounded-lg p-6"
-        >
-          <h3 className="text-lg font-medium">{editingId ? "Edit Question" : "Add New Question"}</h3>
+          className="space-y-6 border rounded-lg p-6">
+          <h3 className="text-lg font-medium">
+            {editingId ? "Edit Question" : "Add New Question"}
+          </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
@@ -200,7 +240,9 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select question type" />
@@ -219,11 +261,13 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
 
             <FormField
               control={form.control}
-              name="answerType"
+              name="answer_type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Answer Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select answer type" />
@@ -266,22 +310,29 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                const textarea = document.getElementById("question-text") as HTMLTextAreaElement
+                                const textarea = document.getElementById(
+                                  "question-text"
+                                ) as HTMLTextAreaElement;
                                 if (textarea) {
-                                  const start = textarea.selectionStart
-                                  const end = textarea.selectionEnd
-                                  const text = field.value
-                                  const newText = text.substring(0, start) + item.symbol + text.substring(end)
-                                  field.onChange(newText)
+                                  const start = textarea.selectionStart;
+                                  const end = textarea.selectionEnd;
+                                  const text = field.value;
+                                  const newText =
+                                    text.substring(0, start) +
+                                    item.symbol +
+                                    text.substring(end);
+                                  field.onChange(newText);
 
                                   // Set cursor position after the inserted symbol
                                   setTimeout(() => {
-                                    textarea.focus()
-                                    textarea.setSelectionRange(start + item.symbol.length, start + item.symbol.length)
-                                  }, 0)
+                                    textarea.focus();
+                                    textarea.setSelectionRange(
+                                      start + item.symbol.length,
+                                      start + item.symbol.length
+                                    );
+                                  }, 0);
                                 }
-                              }}
-                            >
+                              }}>
                               {item.symbol}
                             </Button>
                           </TooltipTrigger>
@@ -319,8 +370,7 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                       variant="outline"
                       size="sm"
                       onClick={handleAddChoice}
-                      className="flex items-center gap-1"
-                    >
+                      className="flex items-center gap-1">
                       <PlusCircle className="h-4 w-4" /> Add Choice
                     </Button>
                   </div>
@@ -332,11 +382,13 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                           <Input
                             value={choice}
                             onChange={(e) => {
-                              handleChoiceChange(index, e.target.value)
+                              handleChoiceChange(index, e.target.value);
                               // Update the form field value
-                              const newChoices = [...choiceInputs]
-                              newChoices[index] = e.target.value
-                              field.onChange(newChoices.filter((c) => c.trim() !== ""))
+                              const newChoices = [...choiceInputs];
+                              newChoices[index] = e.target.value;
+                              field.onChange(
+                                newChoices.filter((c) => c.trim() !== "")
+                              );
                             }}
                             placeholder={`Choice ${index + 1}`}
                             className="flex-1"
@@ -347,13 +399,14 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                               variant="ghost"
                               size="icon"
                               onClick={() => {
-                                handleRemoveChoice(index)
+                                handleRemoveChoice(index);
                                 // Update the form field value after removing a choice
-                                const newChoices = [...choiceInputs]
-                                newChoices.splice(index, 1)
-                                field.onChange(newChoices.filter((c) => c.trim() !== ""))
-                              }}
-                            >
+                                const newChoices = [...choiceInputs];
+                                newChoices.splice(index, 1);
+                                field.onChange(
+                                  newChoices.filter((c) => c.trim() !== "")
+                                );
+                              }}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           )}
@@ -367,10 +420,10 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
             />
           )}
 
-          {answerType === "Image" && (
+          {answer_type === "Image" && (
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="image_url"
               render={({ field }) => (
                 <FormItem className="space-y-4">
                   <FormLabel>Image Upload</FormLabel>
@@ -394,7 +447,11 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                             />
                           </div>
                           <div className="flex justify-center gap-2">
-                            <Button type="button" variant="outline" size="sm" onClick={triggerFileInput}>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={triggerFileInput}>
                               Change Image
                             </Button>
                             <Button
@@ -402,10 +459,9 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                               variant="destructive"
                               size="sm"
                               onClick={() => {
-                                setImagePreview(null)
-                                field.onChange("")
-                              }}
-                            >
+                                setImagePreview(null);
+                                field.onChange("");
+                              }}>
                               Remove
                             </Button>
                           </div>
@@ -413,8 +469,14 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                       ) : (
                         <div className="flex flex-col items-center justify-center gap-2">
                           <Image className="h-10 w-10 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">Drag and drop an image, or click to browse</p>
-                          <Button type="button" variant="secondary" onClick={triggerFileInput} className="mt-2">
+                          <p className="text-sm text-muted-foreground">
+                            Drag and drop an image, or click to browse
+                          </p>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={triggerFileInput}
+                            className="mt-2">
                             <Upload className="h-4 w-4 mr-2" /> Upload Image
                           </Button>
                         </div>
@@ -429,26 +491,38 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
 
           <div className="flex justify-end gap-2">
             {editingId && (
-              <Button type="button" variant="outline" onClick={handleCancelEdit}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancelEdit}>
                 Cancel
               </Button>
             )}
-            <Button type="submit">{editingId ? "Update Question" : "Add Question"}</Button>
+            <Button type="submit">
+              {editingId ? "Update Question" : "Add Question"}
+            </Button>
           </div>
         </form>
       </Form>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium">Questions ({questions.length})</h3>
-          <Button variant="outline" onClick={onSaveProgress} className="flex items-center gap-2">
+          <h3 className="text-lg font-medium">
+            Questions ({questions.length})
+          </h3>
+          <Button
+            variant="outline"
+            onClick={onSaveProgress}
+            className="flex items-center gap-2">
             <Save className="h-4 w-4" /> Save Progress
           </Button>
         </div>
 
         {questions.length === 0 ? (
           <div className="text-center p-8 border border-dashed rounded-lg">
-            <p className="text-muted-foreground">No questions added yet. Add your first question above.</p>
+            <p className="text-muted-foreground">
+              No questions added yet. Add your first question above.
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -457,16 +531,24 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="text-base">Question {index + 1}</CardTitle>
+                      <CardTitle className="text-base">
+                        Question {index + 1}
+                      </CardTitle>
                       <CardDescription>
-                        {question.type} • {question.answerType} Answer
+                        {question.type} • {question.answer_type} Answer
                       </CardDescription>
                     </div>
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => handleEditQuestion(question)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditQuestion(question)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDeleteQuestion(question.id)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDeleteQuestion(question.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -475,28 +557,36 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
                 <CardContent>
                   <p className="font-medium">{question.text}</p>
 
-                  {question.type === "MCQ" && question.choices && question.choices.length > 0 && (
-                    <div className="mt-2 space-y-1">
-                      <p className="text-sm text-muted-foreground">Choices:</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {question.choices.map((choice, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm">
-                            <div className="h-4 w-4 rounded-full border flex items-center justify-center">
-                              <div className="h-2 w-2 rounded-full bg-muted"></div>
+                  {question.type === "MCQ" &&
+                    question.choices &&
+                    question.choices.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        <p className="text-sm text-muted-foreground">
+                          Choices:
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {question.choices.map((choice, i) => (
+                            <div
+                              key={i}
+                              className="flex items-center gap-2 text-sm">
+                              <div className="h-4 w-4 rounded-full border flex items-center justify-center">
+                                <div className="h-2 w-2 rounded-full bg-muted"></div>
+                              </div>
+                              {choice}
                             </div>
-                            {choice}
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {question.answerType === "Image" && question.imageUrl && (
+                  {question.answer_type === "Image" && question.image_url && (
                     <div className="mt-4">
-                      <p className="text-sm text-muted-foreground mb-2">Image Answer Required:</p>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Image Answer Required:
+                      </p>
                       <div className="relative aspect-video w-full max-h-[150px] overflow-hidden rounded-lg bg-muted/50">
                         <img
-                          src={question.imageUrl || "/placeholder.svg"}
+                          src={question.image_url || "/placeholder.svg"}
                           alt="Answer image"
                           className="object-contain w-full h-full"
                         />
@@ -513,12 +603,11 @@ export function QuestionsForm({ initialQuestions, onSubmit, onSaveProgress }: Qu
       <form
         id="questions-form"
         onSubmit={(e) => {
-          e.preventDefault()
-          handleSubmit()
-        }}
-      >
+          e.preventDefault();
+          handleSubmit();
+        }}>
         <input type="hidden" />
       </form>
     </div>
-  )
+  );
 }

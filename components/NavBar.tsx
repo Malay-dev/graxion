@@ -1,31 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search } from "./Search";
-import { MainNav } from "./MainNav";
-import { UserNav } from "./UserNav";
-import TeamSwitcher from "./TeamSwitcher";
-import { ToggleTheme } from "./layout/toggle-theme";
+import DashNav from "./DashNav";
+import AssessmentNav from "./AssessmentNav";
 
 const NavBar = () => {
   const [pathname, setPathname] = useState("");
-
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setPathname(window.location.pathname);
+      const pathParts = window.location.pathname.split("/");
+      setPathname(pathParts[1]);
+      console.log(pathParts);
     }
   }, []);
 
   return (
     <div className="border-b">
       <div className="flex h-16 items-center px-4">
-        <ToggleTheme />
-        <TeamSwitcher />
-        {pathname !== "/dashboard" && <MainNav className="mx-6" />}
-        <div className="ml-auto flex items-center space-x-4">
-          <Search />
-          <UserNav />
-        </div>
+        {pathname === "dashboard" && <DashNav />}
+        {pathname === "assessment" && <AssessmentNav />}
       </div>
     </div>
   );

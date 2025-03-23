@@ -37,16 +37,14 @@ const formSchema = z.object({
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters." }),
-  startDate: z.date({ required_error: "Start date is required." }),
-  endDate: z.date({ required_error: "End date is required." }),
-  maxScore: z.coerce
+  start_date: z.date({ required_error: "Start date is required." }),
+  end_date: z.date({ required_error: "End date is required." }),
+  max_score: z.coerce
     .number()
     .min(1, { message: "Max score must be at least 1." }),
-  studentsAttempted: z.coerce
-    .number()
-    .min(0, { message: "Cannot be negative." }),
-  studentsPassed: z.coerce.number().min(0, { message: "Cannot be negative." }),
-  passingScore: z.coerce
+  no_st_attempted: z.coerce.number().min(0, { message: "Cannot be negative." }),
+  no_st_passed: z.coerce.number().min(0, { message: "Cannot be negative." }),
+  passing_score: z.coerce
     .number()
     .min(1, { message: "Passing score must be at least 1." }),
   subject: z.string({ required_error: "Please select a subject" }),
@@ -67,14 +65,16 @@ export function AssessmentDetailsForm({
     defaultValues: {
       title: initialData.title || "",
       description: initialData.description || "",
-      startDate: initialData.startDate
-        ? new Date(initialData.startDate)
+      start_date: initialData.start_date
+        ? new Date(format(new Date(initialData.start_date), "yyyy-MM-dd"))
         : undefined,
-      endDate: initialData.endDate ? new Date(initialData.endDate) : undefined,
-      maxScore: initialData.maxScore || 100,
-      studentsAttempted: initialData.studentsAttempted || 0,
-      studentsPassed: initialData.studentsPassed || 0,
-      passingScore: initialData.passingScore || 60,
+      end_date: initialData.end_date
+        ? new Date(format(new Date(initialData.end_date), "yyyy-MM-dd"))
+        : undefined,
+      max_score: initialData.max_score || 100,
+      no_st_attempted: initialData.no_st_attempted || 0,
+      no_st_passed: initialData.no_st_passed || 0,
+      passing_score: initialData.passing_score || 60,
       subject: initialData.subject || "",
       class: initialData.class || "",
     },
@@ -83,8 +83,8 @@ export function AssessmentDetailsForm({
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     onSubmit({
       ...values,
-      startDate: values.startDate.toISOString(),
-      endDate: values.endDate.toISOString(),
+      start_date: format(values.start_date, "yyyy-MM-dd"),
+      end_date: format(values.end_date, "yyyy-MM-dd"),
     });
   };
 
@@ -162,7 +162,7 @@ export function AssessmentDetailsForm({
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="startDate"
+              name="start_date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Start Date</FormLabel>
@@ -200,7 +200,7 @@ export function AssessmentDetailsForm({
 
             <FormField
               control={form.control}
-              name="endDate"
+              name="end_date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>End Date</FormLabel>
@@ -257,7 +257,7 @@ export function AssessmentDetailsForm({
 
           <FormField
             control={form.control}
-            name="maxScore"
+            name="max_score"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Maximum Score</FormLabel>
@@ -271,7 +271,7 @@ export function AssessmentDetailsForm({
 
           <FormField
             control={form.control}
-            name="passingScore"
+            name="passing_score"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Passing Score</FormLabel>
@@ -285,7 +285,7 @@ export function AssessmentDetailsForm({
 
           <FormField
             control={form.control}
-            name="studentsAttempted"
+            name="no_st_attempted"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>No. of Students Attempted</FormLabel>
@@ -299,7 +299,7 @@ export function AssessmentDetailsForm({
 
           <FormField
             control={form.control}
-            name="studentsPassed"
+            name="no_st_passed"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>No. of Students Passed</FormLabel>

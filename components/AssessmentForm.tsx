@@ -15,16 +15,15 @@ import { QuestionsForm } from "./QuestionsForm";
 import { AssessmentPreview } from "./AssessmentPreview";
 import { ChevronLeft, ChevronRight, Save } from "lucide-react";
 
-// Define the assessment data structure
 export type AssessmentData = {
   title: string;
   description: string;
-  startDate: string;
-  endDate: string;
-  maxScore: number;
-  studentsAttempted: number;
-  studentsPassed: number;
-  passingScore: number;
+  start_date: string;
+  end_date: string;
+  max_score: number;
+  no_st_attempted: number;
+  no_st_passed: number;
+  passing_score: number;
   subject: string;
   class: string;
   questions: Question[];
@@ -34,9 +33,11 @@ export type Question = {
   id: string;
   type: "Short Answer" | "Long Answer" | "MCQ";
   text: string;
-  answerType: "Text" | "Image";
+  answer_type: "Text" | "Image";
   choices?: string[];
-  imageUrl?: string;
+  image_url?: string;
+  expected_answer: string;
+  marks: number;
 };
 
 export default function AssessmentFormPopup({
@@ -45,53 +46,110 @@ export default function AssessmentFormPopup({
   children: React.ReactNode;
 }>) {
   const [open, setOpen] = useState(false);
-  const [currentStage, setCurrentStage] = useState(1);
+  const [currentStage, setCurrentStage] = useState(2);
   const [assessmentData, setAssessmentData] = useState<AssessmentData>({
     title: "",
     description: "",
-    startDate: "",
-    endDate: "",
-    maxScore: 100,
-    studentsAttempted: 0,
-    studentsPassed: 0,
-    passingScore: 60,
+    start_date: "",
+    end_date: "",
+    max_score: 100,
+    no_st_attempted: 0,
+    no_st_passed: 0,
+    passing_score: 60,
     subject: "",
     class: "",
     questions: [],
   });
 
-  const handleStage1Submit = (data: Partial<AssessmentData>) => {
+  const handleStage1Submit = async (data: Partial<AssessmentData>) => {
     const updatedData = { ...assessmentData, ...data };
     setAssessmentData(updatedData);
     console.log("Stage 1 Data:", updatedData);
-    setCurrentStage(2);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/assessments/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save assessment details");
+      }
+
+      setCurrentStage(2);
+    } catch (error) {
+      console.error("Error saving assessment details:", error);
+      alert("Failed to save assessment details. Please try again.");
+    }
   };
 
-  const handleStage2Submit = (questions: Question[]) => {
+  const handleStage2Submit = async (questions: Question[]) => {
     const updatedData = { ...assessmentData, questions };
     setAssessmentData(updatedData);
     console.log("Stage 2 Data:", updatedData);
-    setCurrentStage(3);
+
+    try {
+      const response = await fetch("/api/assessment/questions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save questions");
+      }
+
+      setCurrentStage(3);
+    } catch (error) {
+      console.error("Error saving questions:", error);
+      alert("Failed to save questions. Please try again.");
+    }
   };
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
     console.log("Final Assessment Data:", assessmentData);
-    setOpen(false);
-    setCurrentStage(1);
-    // Reset form data if needed
-    setAssessmentData({
-      title: "",
-      description: "",
-      startDate: "",
-      endDate: "",
-      maxScore: 100,
-      studentsAttempted: 0,
-      studentsPassed: 0,
-      passingScore: 60,
-      subject: "",
-      class: "",
-      questions: [],
-    });
+
+    try {
+      const response = await fetch("/api/assessment/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(assessmentData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit assessment");
+      }
+
+      setOpen(false);
+      setCurrentStage(1);
+      // Reset form data if needed
+      setAssessmentData({
+        title: "",
+        description: "",
+        start_date: "",
+        end_date: "",
+        max_score: 100,
+        no_st_attempted: 0,
+        no_st_passed: 0,
+        passing_score: 60,
+        subject: "",
+        class: "",
+        questions: [],
+      });
+    } catch (error) {
+      console.error("Error submitting assessment:", error);
+      alert("Failed to submit assessment. Please try again.");
+    }
   };
 
   const goBack = () => {
