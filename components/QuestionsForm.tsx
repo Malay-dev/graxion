@@ -1,13 +1,14 @@
 "use client";
 
 import type React from "react";
+import Image from "next/image";
 
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { v4 as uuidv4 } from "uuid";
-import { PlusCircle, Trash2, Edit, Save, Upload, Image } from "lucide-react";
+import { PlusCircle, Trash2, Edit, Save, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ImagesSquare } from "@phosphor-icons/react/dist/ssr";
 
 const questionSchema = z.object({
   type: z.enum(["Short Answer", "Long Answer", "MCQ"], {
@@ -440,7 +442,7 @@ export function QuestionsForm({
                       {imagePreview ? (
                         <div className="space-y-4 w-full">
                           <div className="relative aspect-video w-full max-h-[200px] overflow-hidden rounded-lg">
-                            <img
+                            <Image
                               src={imagePreview || "/placeholder.svg"}
                               alt="Preview"
                               className="object-contain w-full h-full"
@@ -468,7 +470,7 @@ export function QuestionsForm({
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center gap-2">
-                          <Image className="h-10 w-10 text-muted-foreground" />
+                          <ImagesSquare className="h-10 w-10 text-muted-foreground" />
                           <p className="text-sm text-muted-foreground">
                             Drag and drop an image, or click to browse
                           </p>
@@ -585,7 +587,7 @@ export function QuestionsForm({
                         Image Answer Required:
                       </p>
                       <div className="relative aspect-video w-full max-h-[150px] overflow-hidden rounded-lg bg-muted/50">
-                        <img
+                        <Image
                           src={question.image_url || "/placeholder.svg"}
                           alt="Answer image"
                           className="object-contain w-full h-full"
