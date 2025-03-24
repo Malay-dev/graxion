@@ -34,6 +34,8 @@ interface AssessmentSidebarProps {
 export function AssessmentSidebar({
   id,
   title,
+  description,
+  subject,
   startDate,
   endDate,
   questionsAnswered,
@@ -43,6 +45,7 @@ export function AssessmentSidebar({
   isSubmitted = false,
   onSubmit,
   onSave,
+  submitDisabled,
 }: AssessmentSidebarProps) {
   const progress = (questionsAnswered / totalQuestions) * 100;
   const formattedStartDate = startDate.toLocaleDateString();
@@ -64,10 +67,18 @@ export function AssessmentSidebar({
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-xl">{title}</CardTitle>
+        <p className="text-sm text-muted-foreground mt-1">ID: {id}</p>
         <div className="space-y-2 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground min-h-10 mb-6">
+            {description}
+          </p>
           <div className="flex items-center">
-            <Calendar className="mr-2 h-4 w-4" />
-            <span className="font-medium mr-1">Period:</span>
+            <span className="font-medium mr-1 text-foreground">Subject:</span>
+            <span>{subject}</span>
+          </div>
+          <div className="flex items-center">
+            <Calendar className="mr-2 h-4 w-4 text-foreground" />
+            <span className="font-medium mr-1 text-foreground">Period:</span>
             <span>
               {formattedStartDate} - {formattedEndDate}
             </span>
@@ -121,7 +132,10 @@ export function AssessmentSidebar({
       <CardFooter className="flex flex-col space-y-2">
         {!isSubmitted ? (
           <>
-            <Button className="w-full" onClick={onSubmit}>
+            <Button
+              className="w-full"
+              onClick={onSubmit}
+              disabled={submitDisabled}>
               <Send className="mr-2 h-4 w-4" />
               Submit Assessment
             </Button>
