@@ -1,6 +1,7 @@
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import AuthContext from "@/context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -10,14 +11,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange>
-          <NavBar></NavBar>
-          {children}
-        </ThemeProvider>
+        <AuthContext>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            <NavBar></NavBar>
+            {children}
+          </ThemeProvider>
+        </AuthContext>
       </body>
     </html>
   );
