@@ -24,7 +24,7 @@ interface MultipleChoiceQuestionProps {
   question: string;
   options: Option[];
   marks: number;
-  correctAnswer: string;
+  expected_answer: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
   onAnswerChange?: (answerId: string) => void;
@@ -39,7 +39,7 @@ export function MultipleChoiceQuestion({
   question,
   options,
   marks,
-  correctAnswer,
+  expected_answer,
   isSubmitted = false,
   onAnswerChange,
   resources,
@@ -47,9 +47,9 @@ export function MultipleChoiceQuestion({
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [reviewOpen, setReviewOpen] = useState(false);
 
-  const isCorrect = isSubmitted && selectedOption === correctAnswer;
+  const isCorrect = isSubmitted && selectedOption === expected_answer;
   const isIncorrect =
-    isSubmitted && selectedOption && selectedOption !== correctAnswer;
+    isSubmitted && selectedOption && selectedOption !== expected_answer;
 
   const handleOptionChange = (value: string) => {
     if (!isSubmitted) {
@@ -88,11 +88,11 @@ export function MultipleChoiceQuestion({
               <div
                 key={option.id}
                 className={`flex items-center space-x-2 rounded-md border p-3 ${
-                  isSubmitted && correctAnswer === option.id
+                  isSubmitted && expected_answer === option.id
                     ? "border-green-500 bg-green-50 dark:bg-green-950/20"
                     : isSubmitted &&
                       selectedOption === option.id &&
-                      selectedOption !== correctAnswer
+                      selectedOption !== expected_answer
                     ? "border-red-500 bg-red-50 dark:bg-red-950/20"
                     : ""
                 }`}>
@@ -105,14 +105,14 @@ export function MultipleChoiceQuestion({
                   className="flex-grow cursor-pointer">
                   {option.text}
                 </Label>
-                {isSubmitted && correctAnswer === option.id && (
+                {isSubmitted && expected_answer === option.id && (
                   <Check className="h-4 w-4 text-green-500" />
                 )}
                 {isSubmitted &&
                   selectedOption === option.id &&
-                  selectedOption !== correctAnswer && (
+                  selectedOption !== expected_answer && (
                     <X className="h-4 w-4 text-red-500" />
-                  )}
+                  )}    
               </div>
             ))}
           </RadioGroup>

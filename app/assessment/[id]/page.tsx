@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,185 +25,28 @@ import {
   WarningCircle,
 } from "@phosphor-icons/react/dist/ssr";
 
-const mockAssessment = {
-  id: "ASM-2023-WD-001",
-  title: "Introduction to Web Development",
-  description:
-    "A comprehensive assessment covering the fundamentals of web development, including HTML, CSS, and JavaScript.",
-  start_date: "2023-06-01",
-  end_date: "2023-06-30",
-  max_score: 50,
-  passing_score: 30,
-  subject: "Web Development",
-  questions: [
-    {
-      id: "q1",
-      type: "mcq",
-      question: "Which of the following is a frontend JavaScript framework?",
-      options: [
-        { id: "a", text: "Express.js" },
-        { id: "b", text: "Django" },
-        { id: "c", text: "React" },
-        { id: "d", text: "Flask" },
-      ],
-      correctAnswer: "c",
-      marks: 5,
-      imageTypeAnswer: false,
-      resources: {
-        videos: [
-          {
-            title: "React JS Crash Course",
-            url: "https://www.youtube.com/watch?v=w7ejDZ8SWv8",
-          },
-          {
-            title: "Frontend Frameworks Explained",
-            url: "https://www.youtube.com/watch?v=8pDqJVdNa44",
-          },
-          {
-            title: "JavaScript Frameworks Comparison",
-            url: "https://www.youtube.com/watch?v=cuHDQhDhvPE",
-          },
-        ],
-        articles: [
-          {
-            title: "Introduction to React",
-            url: "https://reactjs.org/tutorial/tutorial.html",
-          },
-          {
-            title: "Frontend Frameworks in 2023",
-            url: "https://www.freecodecamp.org/news/frontend-frameworks-2023/",
-          },
-        ],
-      },
-    },
-    {
-      id: "q2",
-      type: "mcq",
-      question: "Which HTML tag is used to create a hyperlink?",
-      options: [
-        { id: "a", text: "<link>" },
-        { id: "b", text: "<a>" },
-        { id: "c", text: "<href>" },
-        { id: "d", text: "<url>" },
-      ],
-      correctAnswer: "b",
-      marks: 5,
-      imageTypeAnswer: false,
-      resources: {
-        videos: [
-          {
-            title: "HTML Basics - Links and Anchors",
-            url: "https://www.youtube.com/watch?v=DiSvq5SgLMI",
-          },
-          {
-            title: "HTML Tutorial for Beginners",
-            url: "https://www.youtube.com/watch?v=qz0aGYrrlhU",
-          },
-        ],
-        articles: [
-          {
-            title: "HTML Links",
-            url: "https://www.w3schools.com/html/html_links.asp",
-          },
-          {
-            title: "The Anchor Element",
-            url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a",
-          },
-        ],
-      },
-    },
-    {
-      id: "q3",
-      type: "short",
-      question: "What does CSS stand for?",
-      correctAnswer: "Cascading Style Sheets",
-      marks: 10,
-      imageTypeAnswer: true,
-      resources: {
-        videos: [
-          {
-            title: "CSS Crash Course For Absolute Beginners",
-            url: "https://www.youtube.com/watch?v=yfoY53QXEnI",
-          },
-          {
-            title: "CSS Explained in 5 Minutes",
-            url: "https://www.youtube.com/watch?v=1PnVor36_40",
-          },
-        ],
-        articles: [
-          {
-            title: "CSS: Cascading Style Sheets",
-            url: "https://developer.mozilla.org/en-US/docs/Web/CSS",
-          },
-          { title: "Learn CSS", url: "https://web.dev/learn/css/" },
-        ],
-      },
-    },
-    {
-      id: "q4",
-      type: "long",
-      question:
-        "Explain the difference between synchronous and asynchronous JavaScript with examples.",
-      correctAnswer:
-        "Synchronous JavaScript operations block execution until completed, while asynchronous operations allow the program to continue running while waiting for a result. Example of synchronous: console.log() statements execute in order. Example of asynchronous: fetch() API which returns a Promise that resolves when the network request completes.",
-      marks: 15,
-      imageTypeAnswer: false,
-      resources: {
-        videos: [
-          {
-            title: "Async JS Crash Course - Callbacks, Promises, Async Await",
-            url: "https://www.youtube.com/watch?v=PoRJizFvM7s",
-          },
-          {
-            title: "JavaScript Promises In 10 Minutes",
-            url: "https://www.youtube.com/watch?v=DHvZLI7Db8E",
-          },
-        ],
-        articles: [
-          {
-            title: "Asynchronous JavaScript",
-            url: "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous",
-          },
-          {
-            title: "Understanding Async/Await",
-            url: "https://javascript.info/async-await",
-          },
-        ],
-      },
-    },
-    {
-      id: "q5",
-      type: "short",
-      question:
-        "What is the purpose of the 'viewport' meta tag in responsive web design?",
-      correctAnswer:
-        "The viewport meta tag controls how a webAssessment is displayed on mobile devices. It sets the width of the viewport to the device width and initial scale, enabling responsive design.",
-      marks: 15,
-      imageTypeAnswer: true,
-      resources: {
-        videos: [
-          {
-            title: "Responsive Web Design Tutorial",
-            url: "https://www.youtube.com/watch?v=srvUrASNj0s",
-          },
-          {
-            title: "CSS Media Queries Tutorial",
-            url: "https://www.youtube.com/watch?v=2KL-z9A56SQ",
-          },
-        ],
-        articles: [
-          {
-            title: "Responsive Web Design Basics",
-            url: "https://web.dev/responsive-web-design-basics/",
-          },
-          {
-            title: "Using the viewport meta tag",
-            url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag",
-          },
-        ],
-      },
-    },
-  ],
+type AssessmentData = {
+  id: string;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  max_score: number;
+  passing_score: number;
+  subject: string;
+  questions: {
+    id: string;
+    type: string;
+    text: string;
+    options?: { option_id: string; id: string; text: string }[];
+    expected_answer: string;
+    marks: number;
+    answer_type: string;
+    resources?: {
+      videos?: { title: string; url: string }[];
+      articles?: { title: string; url: string }[];
+    };
+  }[];
 };
 
 const Assessment = () => {
@@ -216,13 +61,35 @@ const Assessment = () => {
   >({});
   const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
   const [correctness, setCorrectness] = useState<Record<string, boolean>>({});
-  // Check if all questions are answered
+
+  const [assessment_data, setAssessment_data] = useState<AssessmentData>();
+  const params = useParams();
+
   useEffect(() => {
-    const allAnswered = mockAssessment.questions.every(
-      (question) => completionStatus[question.id] === true
-    );
-    setAllQuestionsAnswered(allAnswered);
-  }, [completionStatus]);
+    const fetchData = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/assessments/get/${params?.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = await response.json();
+      setAssessment_data(result);
+      console.log(result);
+    };
+    fetchData();
+  }, [params?.id]);
+
+  useEffect(() => {
+    if (assessment_data) {
+      const allAnswered = assessment_data.questions.every(
+        (question) => completionStatus[question.id] === true
+      );
+      setAllQuestionsAnswered(allAnswered);
+    }
+  }, [completionStatus, assessment_data]);
 
   const handleAnswerChange = (
     questionId: string,
@@ -268,30 +135,30 @@ const Assessment = () => {
     let marks = 0;
     const correctness: Record<string, boolean> = {};
 
-    mockAssessment.questions.forEach((question) => {
+    assessment_data?.questions.forEach((question) => {
       const userAnswer = answers[question.id];
 
       if (!userAnswer) return;
 
       if (
-        question.type === "mcq" &&
-        userAnswer.text === question.correctAnswer
+        question.type === "MCQ" &&
+        userAnswer.text === question.expected_answer
       ) {
         marks += question.marks;
         correctness[question.id] = true;
       } else if (
-        question.type === "short" &&
+        question.type === "Short Answer" &&
         userAnswer.text &&
         userAnswer.text.toLowerCase().trim() ===
-          question.correctAnswer.toLowerCase().trim()
+          question.expected_answer.toLowerCase().trim()
       ) {
         marks += question.marks;
         correctness[question.id] = true;
       } else if (
-        question.type === "long" &&
+        question.type === "Long Answer" &&
         userAnswer.text &&
         userAnswer.text.length > 0 &&
-        userAnswer.text.length >= question.correctAnswer.length * 0.5
+        userAnswer.text.length >= question.expected_answer.length * 0.5
       ) {
         marks += question.marks;
         correctness[question.id] = true;
@@ -311,7 +178,7 @@ const Assessment = () => {
     setCorrectness(correctness);
 
     toast("Assessment Submitted", {
-      description: `You've scored ${marks} out of ${mockAssessment.max_score} marks.`,
+      description: `You've scored ${marks} out of ${assessment_data?.max_score} marks.`,
     });
   };
 
@@ -325,22 +192,26 @@ const Assessment = () => {
     (key) => completionStatus[key]
   ).length;
 
+  if (!assessment_data) {
+    return <div>Loading...</div>; // Show a loading state while data is being fetched
+  }
+
   return (
     <Tabs defaultValue="complete" className="flex-1 px-6">
       <div className="container h-full py-6">
         <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_300px]">
           <div className="hidden flex-col space-y-4 sm:flex md:order-2">
             <AssessmentSidebar
-              id={mockAssessment.id}
-              title={mockAssessment.title}
-              description={mockAssessment.description}
-              startDate={new Date(mockAssessment.start_date)}
-              endDate={new Date(mockAssessment.end_date)}
-              maxScore={mockAssessment.max_score}
-              passingScore={mockAssessment.passing_score}
-              subject={mockAssessment.subject}
+              id={assessment_data.id}
+              title={assessment_data.title}
+              description={assessment_data.description}
+              startDate={new Date(assessment_data.start_date)}
+              endDate={new Date(assessment_data.end_date)}
+              maxScore={assessment_data.max_score}
+              passingScore={assessment_data.passing_score}
+              subject={assessment_data.subject}
               questionsAnswered={questionsAnswered}
-              totalQuestions={mockAssessment.questions.length}
+              totalQuestions={assessment_data.questions.length}
               earnedMarks={earnedMarks}
               isSubmitted={isSubmitted}
               onSubmit={() => setShowSubmitDialog(true)}
@@ -355,7 +226,7 @@ const Assessment = () => {
                 <div className="min-h-[400px] max-h-[400px] flex-1 bg-accent p-4 md:min-h-[500px] md:max-h-[500px] lg:min-h-[645px] lg:max-h-[645px] overflow-y-auto">
                   {/* Even if this is h-screen, it will be contained within the parent */}
                   <div className="h-screen">
-                    {mockAssessment.questions.map((question, index) => {
+                    {assessment_data.questions.map((question, index) => {
                       const isAnswered = completionStatus[question.id] === true;
                       const isCorrect =
                         completionStatus[question.id] === true &&
@@ -395,13 +266,13 @@ const Assessment = () => {
                             </div>
                           </div>
 
-                          {question.type === "mcq" && (
+                          {question.type === "MCQ" && (
                             <MultipleChoiceQuestion
                               id={question.id}
-                              question={question.question}
+                              question={question.text}
                               options={question.options || []}
                               marks={question.marks}
-                              correctAnswer={question.correctAnswer}
+                              expected_answer={question.expected_answer}
                               isSubmitted={isSubmitted}
                               showCorrectAnswer={isSubmitted}
                               onAnswerChange={(answer) =>
@@ -411,12 +282,12 @@ const Assessment = () => {
                             />
                           )}
 
-                          {question.type === "short" && (
+                          {question.type === "Short Answer" && (
                             <ShortAnswerQuestion
                               id={question.id}
-                              question={question.question}
+                              question={question.text}
                               marks={question.marks}
-                              correctAnswer={question.correctAnswer}
+                              expected_answer={question.expected_answer}
                               isSubmitted={isSubmitted}
                               showCorrectAnswer={isSubmitted}
                               onAnswerChange={(answer) =>
@@ -425,17 +296,17 @@ const Assessment = () => {
                               onImageUpload={(imageUrl) =>
                                 handleImageUpload(question.id, imageUrl)
                               }
-                              imageTypeAnswer={question.imageTypeAnswer}
+                              imageTypeAnswer={question.answer_type === "IMAGE"}
                               resources={question.resources}
                             />
                           )}
 
-                          {question.type === "long" && (
+                          {question.type === "Long Answer" && (
                             <LongAnswerQuestion
                               id={question.id}
-                              question={question.question}
+                              question={question.text}
                               marks={question.marks}
-                              correctAnswer={question.correctAnswer}
+                              expected_answer={question.expected_answer}
                               isSubmitted={isSubmitted}
                               showCorrectAnswer={isSubmitted}
                               onAnswerChange={(answer) =>
@@ -444,7 +315,7 @@ const Assessment = () => {
                               onImageUpload={(imageUrl) =>
                                 handleImageUpload(question.id, imageUrl)
                               }
-                              imageTypeAnswer={question.imageTypeAnswer}
+                              imageTypeAnswer={question.answer_type === "IMAGE"}
                               resources={question.resources}
                             />
                           )}
@@ -463,12 +334,12 @@ const Assessment = () => {
                       <AlertDialogDescription>
                         Are you sure you want to submit your assessment? You
                         have answered {questionsAnswered} out of{" "}
-                        {mockAssessment.questions.length} questions.
+                        {assessment_data.questions.length} questions.
                         {questionsAnswered <
-                          mockAssessment.questions.length && (
+                          assessment_data.questions.length && (
                           <p className="mt-2 text-amber-500 font-medium">
                             Warning: You have{" "}
-                            {mockAssessment.questions.length -
+                            {assessment_data.questions.length -
                               questionsAnswered}{" "}
                             unanswered questions.
                           </p>

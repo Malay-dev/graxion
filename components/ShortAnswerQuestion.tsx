@@ -22,7 +22,7 @@ interface ShortAnswerQuestionProps {
   id: string;
   question: string;
   marks: number;
-  correctAnswer: string;
+  expected_answer: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
   imageTypeAnswer?: boolean;
@@ -38,7 +38,7 @@ export function ShortAnswerQuestion({
   id,
   question,
   marks,
-  correctAnswer,
+  expected_answer,
   isSubmitted = false,
   imageTypeAnswer = false,
   onAnswerChange,
@@ -53,7 +53,7 @@ export function ShortAnswerQuestion({
 
   const isCorrect =
     isSubmitted &&
-    answer.toLowerCase().trim() === correctAnswer.toLowerCase().trim();
+    answer.toLowerCase().trim() === expected_answer.toLowerCase().trim();
   const isIncorrect = isSubmitted && answer && !isCorrect;
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -145,7 +145,7 @@ export function ShortAnswerQuestion({
                 Correct Answer:
               </p>
               <p className="text-sm text-green-700 dark:text-green-300">
-                {correctAnswer}
+                {expected_answer}
               </p>
             </div>
           )}

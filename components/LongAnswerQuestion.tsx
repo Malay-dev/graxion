@@ -22,7 +22,7 @@ interface LongAnswerQuestionProps {
   id: string;
   question: string;
   marks: number;
-  correctAnswer: string;
+  expected_answer: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
   imageTypeAnswer?: boolean;
@@ -38,7 +38,7 @@ export function LongAnswerQuestion({
   id,
   question,
   marks,
-  correctAnswer,
+  expected_answer,
   isSubmitted = false,
   imageTypeAnswer = false,
   onAnswerChange,
@@ -53,7 +53,7 @@ export function LongAnswerQuestion({
   const isCorrect =
     isSubmitted &&
     answer.length > 0 &&
-    answer.length >= correctAnswer.length * 0.5;
+    answer.length >= expected_answer.length * 0.5;
   const isIncorrect = isSubmitted && answer && !isCorrect;
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -145,7 +145,7 @@ export function LongAnswerQuestion({
                 Model Answer:
               </p>
               <p className="text-sm text-green-700 dark:text-green-300">
-                {correctAnswer}
+                {expected_answer}
               </p>
             </div>
           )}
