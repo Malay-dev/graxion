@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import DashNav from "./DashNav";
-
+import { LandingNavbar } from "./landing/sections/LandingNavbar";
 const NavBar = () => {
   const [pathname, setPathname] = useState("");
   useEffect(() => {
@@ -14,13 +14,10 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div className="border-b">
-      {pathname === "dashboard" && (
-        <div className="flex h-16 items-center px-4">
-          <DashNav />{" "}
-        </div>
-      )}
-    </div>
+    <>
+      {pathname === "dashboard" && <DashNav />}
+      {pathname == "" && <LandingNavbar />}
+    </>
   );
 };
 
