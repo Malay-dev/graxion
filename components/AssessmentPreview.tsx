@@ -69,8 +69,8 @@ export function AssessmentPreview({
                 Duration
               </h3>
               <p className="font-medium">
-                {formatDate(assessmentData.startDate)} -{" "}
-                {formatDate(assessmentData.endDate)}
+                {formatDate(assessmentData.start_date)} -{" "}
+                {formatDate(assessmentData.end_date)}
               </p>
             </div>
           </div>
@@ -87,14 +87,14 @@ export function AssessmentPreview({
               <h3 className="font-semibold text-sm text-muted-foreground">
                 Max Score
               </h3>
-              <p className="font-medium text-lg">{assessmentData.maxScore}</p>
+              <p className="font-medium text-lg">{assessmentData.max_score}</p>
             </div>
             <div className="border rounded-lg p-3">
               <h3 className="font-semibold text-sm text-muted-foreground">
                 Passing Score
               </h3>
               <p className="font-medium text-lg">
-                {assessmentData.passingScore}
+                {assessmentData.passing_score}
               </p>
             </div>
             <div className="border rounded-lg p-3">
@@ -102,7 +102,7 @@ export function AssessmentPreview({
                 Students Attempted
               </h3>
               <p className="font-medium text-lg">
-                {assessmentData.studentsAttempted}
+                {assessmentData.no_st_attempted}
               </p>
             </div>
             <div className="border rounded-lg p-3">
@@ -110,7 +110,7 @@ export function AssessmentPreview({
                 Students Passed
               </h3>
               <p className="font-medium text-lg">
-                {assessmentData.studentsPassed}
+                {assessmentData.no_st_passed}
               </p>
             </div>
           </div>
@@ -140,7 +140,7 @@ export function AssessmentPreview({
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{question.type}</span>
                       <span>•</span>
-                      <span>{question.answerType} Answer</span>
+                      <span>{question.answer_type} Answer</span>
                     </div>
                   </div>
                   <p className="mt-2">{question.text}</p>
@@ -165,14 +165,14 @@ export function AssessmentPreview({
                       </div>
                     )}
 
-                  {question.answerType === "Image" && question.imageUrl && (
+                  {question.answer_type === "Image" && question.image_url && (
                     <div className="mt-4">
                       <h4 className="text-sm font-medium">
                         Image Answer Required:
                       </h4>
                       <div className="mt-2 relative aspect-video w-full max-h-[150px] overflow-hidden rounded-lg bg-muted/50">
                         <Image
-                          src={question.imageUrl || "/placeholder.svg"}
+                          src={question.image_url || "/placeholder.svg"}
                           alt="Answer image"
                           className="object-contain w-full h-full"
                         />
