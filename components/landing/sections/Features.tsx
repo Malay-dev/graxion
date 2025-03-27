@@ -1,47 +1,56 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Brain,
+  CheckCircle,
+  Video,
+  BarChart,
+  Timer,
+  MessageSquare,
+} from "lucide-react";
+import { JSX } from "react";
 
 interface FeaturesProps {
-  icon: string;
+  icon: JSX.Element;
   title: string;
   description: string;
 }
 
 const featureList: FeaturesProps[] = [
   {
-    icon: "TabletSmartphone",
-    title: "Mobile Friendly",
+    icon: <Brain className="w-8 h-8 text-primary" />,
+    title: "AI-Powered Grading",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam, consectetur.",
+      "Automated evaluation for subjective and objective questions with high accuracy.",
   },
   {
-    icon: "BadgeCheck",
-    title: "Social Proof",
+    icon: <CheckCircle className="w-8 h-8 text-primary" />,
+    title: "Instant Feedback",
     description:
-      "Lorem ipsum dolor sit amet consectetur. Natus consectetur, odio ea accusamus aperiam.",
+      "Get AI-generated explanations and video tutorials instantly after submission.",
   },
   {
-    icon: "Goal",
-    title: "Targeted Content",
+    icon: <Video className="w-8 h-8 text-primary" />,
+    title: "Step-by-Step Solutions",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. odio ea accusamus aperiam.",
+      "Review mistakes with AI-powered video solutions for enhanced learning.",
   },
   {
-    icon: "PictureInPicture",
-    title: "Strong Visuals",
+    icon: <BarChart className="w-8 h-8 text-primary" />,
+    title: "Performance Analytics",
     description:
-      "Lorem elit. A odio velit cum aliquam. Natus consectetur dolores, odio ea accusamus aperiam.",
+      "Track progress with detailed reports on strengths and improvement areas.",
   },
   {
-    icon: "MousePointerClick",
-    title: "Clear CTA",
+    icon: <Timer className="w-8 h-8 text-primary" />,
+    title: "Time-Efficient Evaluation",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing. odio ea accusamus consectetur.",
+      "Reduce grading time by 80% and focus on personalized teaching strategies.",
   },
   {
-    icon: "Newspaper",
-    title: "Clear Headline",
+    icon: <MessageSquare className="w-8 h-8 text-primary" />,
+    title: "Multi-Subject Support",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam. Natus consectetur.",
+      "Covers Physics, Mathematics, Chemistry, and Biology for all academic levels.",
   },
 ];
 
@@ -53,24 +62,22 @@ export const FeaturesSection = () => {
       </h2>
 
       <h2 className="text-3xl md:text-4xl text-center font-bold mb-4">
-        What Makes Us Different
+        Why Choose Graxion?
       </h2>
 
       <h3 className="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-8">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem
-        fugiat, odit similique quasi sint reiciendis quidem iure veritatis optio
-        facere tenetur.
+        Graxion leverages AI to simplify grading, provide real-time feedback,
+        and empower students with step-by-step explanations for better learning.
       </h3>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {featureList.map(({ title, description }) => (
+        {featureList.map(({ icon, title, description }) => (
           <div key={title}>
             <Card className="h-full bg-background border-0 shadow-none">
-              <CardHeader className="flex justify-center items-center">
+              <CardHeader className="flex flex-col justify-center items-center text-center">
                 <div className="bg-primary/20 p-2 rounded-full ring-8 ring-primary/10 mb-4">
-                  {/* Icon */}
+                  {icon}
                 </div>
-
                 <CardTitle>{title}</CardTitle>
               </CardHeader>
 

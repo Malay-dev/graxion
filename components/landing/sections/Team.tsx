@@ -25,9 +25,9 @@ export const TeamSection = () => {
   const teamList: TeamProps[] = [
     {
       imageUrl: "",
-      firstName: "Leo",
-      lastName: "Miranda",
-      positions: ["Vue Fronted Developer", "Creator Of This Website"],
+      firstName: "Malay",
+      lastName: "Kumar",
+      positions: ["Developer"],
       socialNetworks: [
         {
           name: "LinkedIn",
@@ -45,9 +45,9 @@ export const TeamSection = () => {
     },
     {
       imageUrl: "",
-      firstName: "Elizabeth",
-      lastName: "Moore",
-      positions: ["UI/UX Designer"],
+      firstName: "Ashiq",
+      lastName: "Noor",
+      positions: ["Developer"],
       socialNetworks: [
         {
           name: "LinkedIn",
@@ -61,9 +61,9 @@ export const TeamSection = () => {
     },
     {
       imageUrl: "",
-      firstName: "David",
+      firstName: "Mathew",
       lastName: "Diaz",
-      positions: ["Machine Learning Engineer", "TensorFlow Tinkerer"],
+      positions: ["AI Engineer"],
       socialNetworks: [
         {
           name: "LinkedIn",
@@ -72,86 +72,6 @@ export const TeamSection = () => {
         {
           name: "Github",
           url: "https://github.com/leoMirandaa",
-        },
-      ],
-    },
-    {
-      imageUrl: "",
-      firstName: "Sarah",
-      lastName: "Robinson",
-      positions: ["Cloud Native Developer", " Kubernetes Orchestrator"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/leoMirandaa",
-        },
-        {
-          name: "X",
-          url: "https://x.com/leo_mirand4",
-        },
-      ],
-    },
-    {
-      imageUrl: "",
-      firstName: "Michael",
-      lastName: "Holland",
-      positions: ["DevOps Engineer", "CI/CD Pipeline Mastermind"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
-        },
-      ],
-    },
-    {
-      imageUrl: "",
-      firstName: "Zoe",
-      lastName: "Garcia",
-      positions: ["JavaScript Evangelist", "Deno Champion"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/leoMirandaa",
-        },
-      ],
-    },
-    {
-      imageUrl: "",
-      firstName: "Evan",
-      lastName: "James",
-      positions: ["Backend Developer"],
-      socialNetworks: [
-        {
-          name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
-        },
-        {
-          name: "Github",
-          url: "https://github.com/leoMirandaa",
-        },
-        {
-          name: "X",
-          url: "https://x.com/leo_mirand4",
-        },
-      ],
-    },
-    {
-      imageUrl: "",
-      firstName: "Pam",
-      lastName: "Taylor",
-      positions: ["Fullstack Developer", "UX Researcher"],
-      socialNetworks: [
-        {
-          name: "X",
-          url: "https://x.com/leo_mirand4",
         },
       ],
     },
@@ -179,7 +99,7 @@ export const TeamSection = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
         {teamList.map(
           (
             { imageUrl, firstName, lastName, positions, socialNetworks },
@@ -198,7 +118,7 @@ export const TeamSection = () => {
                     className="w-full aspect-square object-cover saturate-0 transition-all duration-200 ease-linear size-full group-hover/hoverimg:saturate-100 group-hover/hoverimg:scale-[1.01]"
                   />
                 </div>
-                <CardTitle className="py-6 pb-4 px-6">
+                <CardTitle className="py-6 pb-2 px-6">
                   {firstName}
                   <span className="text-primary ml-2">{lastName}</span>
                 </CardTitle>
@@ -207,7 +127,7 @@ export const TeamSection = () => {
                 <CardContent
                   key={index}
                   className={`pb-0 text-muted-foreground ${
-                    index === positions.length - 1 && "pb-6"
+                    index === positions.length - 1 && "pb-0"
                   }`}>
                   {position}
                   {index < positions.length - 1 && <span>,</span>}

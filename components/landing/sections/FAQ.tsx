@@ -13,32 +13,33 @@ interface FAQProps {
 
 const FAQList: FAQProps[] = [
   {
-    question: "Is this template free?",
-    answer: "Yes. It is a free NextJS Shadcn template.",
+    question: "What is Graxion?",
+    answer:
+      "Graxion is an AI-powered assessment platform that automates grading and provides instant feedback with AI-generated explanations.",
     value: "item-1",
   },
   {
-    question: "Duis aute irure dolor in reprehenderit in voluptate velit?",
+    question: "How does Graxion grade assessments?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint labore quidem quam consectetur sapiente, iste rerum reiciendis animi nihil nostrum sit quo, modi quod.",
+      "Graxion uses AI models to evaluate answers. MCQs are graded instantly, while subjective answers are assessed based on similarity to expected responses.",
     value: "item-2",
   },
   {
-    question:
-      "Lorem ipsum dolor sit amet Consectetur natus dolor minus quibusdam?",
+    question: "Can students see explanations for incorrect answers?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore qui nostrum reiciendis veritatis.",
+      "Yes! When a student answers incorrectly, they can press the 'Review' button to generate AI-powered step-by-step explanations.",
     value: "item-3",
   },
   {
-    question: "Excepteur sint occaecat cupidata non proident sunt?",
-    answer: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
+    question: "What subjects does Graxion support?",
+    answer:
+      "Currently, Graxion supports Physics, Mathematics, Chemistry, and Biology. More subjects will be added soon!",
     value: "item-4",
   },
   {
-    question:
-      "Enim ad minim veniam, quis nostrud exercitation ullamco laboris?",
-    answer: "consectetur adipisicing elit. Sint labore.",
+    question: "Is Graxion free to use?",
+    answer:
+      "Graxion offers a free plan with basic features. Advanced analytics and additional tools are available in the premium plan.",
     value: "item-5",
   },
 ];
@@ -52,18 +53,20 @@ export const FAQSection = () => {
         </h2>
 
         <h2 className="text-3xl md:text-4xl text-center font-bold">
-          Common Questions
+          Got Questions? We’ve Got Answers.
         </h2>
       </div>
 
       <Accordion type="single" collapsible className="AccordionRoot">
         {FAQList.map(({ question, answer, value }) => (
           <AccordionItem key={value} value={value}>
-            <AccordionTrigger className="text-left">
+            <AccordionTrigger className="text-left text-lg font-medium">
               {question}
             </AccordionTrigger>
 
-            <AccordionContent>{answer}</AccordionContent>
+            <AccordionContent className="text-muted-foreground">
+              {answer}
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

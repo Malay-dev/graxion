@@ -1,35 +1,37 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle, BarChart, Clock, Lightbulb } from "lucide-react";
+import { JSX } from "react";
 
 interface BenefitsProps {
-  icon: string;
+  icon: JSX.Element;
   title: string;
   description: string;
 }
 
 const benefitList: BenefitsProps[] = [
   {
-    icon: "Blocks",
-    title: "Build Brand Trust",
+    icon: <CheckCircle className="w-8 h-8 text-primary" />,
+    title: "Accurate AI Grading",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam. Natus consectetur dolores.",
+      "Reduce manual effort with AI-powered assessment, ensuring fair and precise evaluation.",
   },
   {
-    icon: "LineChart",
-    title: "More Leads",
+    icon: <BarChart className="w-8 h-8 text-primary" />,
+    title: "Data-Driven Insights",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam, natus consectetur.",
+      "Gain real-time performance analytics to identify strengths and areas for improvement.",
   },
   {
-    icon: "Wallet",
-    title: "Higher Conversions",
+    icon: <Clock className="w-8 h-8 text-primary" />,
+    title: "Faster Evaluations",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus consectetur. A odio velit cum aliquam",
+      "Save hours with automated grading and instant feedback, improving efficiency.",
   },
   {
-    icon: "Sparkle",
-    title: "Test Marketing Ideas",
+    icon: <Lightbulb className="w-8 h-8 text-primary" />,
+    title: "Personalized Learning",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam. Natus consectetur dolores.",
+      "AI-generated explanations and video solutions help students understand concepts better.",
   },
 ];
 
@@ -41,23 +43,24 @@ export const BenefitsSection = () => {
           <h2 className="text-lg text-primary mb-2 tracking-wider">Benefits</h2>
 
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Your Shortcut to Success
+            How Graxion Transforms Learning
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non
-            ducimus reprehenderit architecto rerum similique facere odit
-            deleniti necessitatibus quo quae.
+            Graxion streamlines assessments, enhances feedback, and personalizes
+            learning, making education more efficient and engaging.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-4 w-full">
-          {benefitList.map(({ title, description }, index) => (
+          {benefitList.map(({ icon, title, description }, index) => (
             <Card
               key={title}
               className="bg-muted/50 dark:bg-card hover:bg-background transition-all delay-75 group/number">
               <CardHeader>
                 <div className="flex justify-between">
-                  {/* Icon */}
+                  <div className="bg-primary/20 p-2 rounded-full ring-8 ring-primary/10">
+                    {icon}
+                  </div>
                   <span className="text-5xl text-muted-foreground/15 font-medium transition-all delay-75 group-hover/number:text-muted-foreground/30">
                     0{index + 1}
                   </span>
