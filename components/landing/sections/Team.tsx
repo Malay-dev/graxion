@@ -24,18 +24,19 @@ interface SocialNetworkProps {
 export const TeamSection = () => {
   const teamList: TeamProps[] = [
     {
-      imageUrl: "",
+      imageUrl:
+        "https://media.licdn.com/dms/image/v2/D5603AQHQaFN6z8_WnQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1663607880574?e=1748476800&v=beta&t=vdp2XPsRo2MJACZMtbtBYSmWClBtgJhhMgtmYDse3Ww",
       firstName: "Malay",
       lastName: "Kumar",
       positions: ["Developer"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
+          url: "https://www.linkedin.com/in/malayk/",
         },
         {
           name: "Github",
-          url: "https://github.com/leoMirandaa",
+          url: "https://github.com/Malay-dev",
         },
         {
           name: "X",
@@ -44,34 +45,36 @@ export const TeamSection = () => {
       ],
     },
     {
-      imageUrl: "",
+      imageUrl:
+        "https://media.licdn.com/dms/image/v2/D5603AQEUduVsUyTGsA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1722496615992?e=1748476800&v=beta&t=6Npcfk3cLeJgaDNC03QZZnSx8lW--dGDsppHP-BfmB8",
       firstName: "Ashiq",
       lastName: "Noor",
       positions: ["Developer"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
+          url: "https://www.linkedin.com/in/ashiq-noor-sudheer/",
         },
         {
-          name: "X",
-          url: "https://x.com/leo_mirand4",
+          name: "Github",
+          url: "https://github.com/AshiqNoor-S",
         },
       ],
     },
     {
-      imageUrl: "",
+      imageUrl:
+        "https://media.licdn.com/dms/image/v2/D5603AQHAJ5PbLpxayQ/profile-displayphoto-shrink_400_400/B56ZRzGD1wGsAo-/0/1737097756809?e=1748476800&v=beta&t=HINy3nfXSLV0bJaGfxW3KwRlA_lyqzS5Ao960RBGhWY",
       firstName: "Mathew",
-      lastName: "Diaz",
+      lastName: "Thomas",
       positions: ["AI Engineer"],
       socialNetworks: [
         {
           name: "LinkedIn",
-          url: "https://www.linkedin.com/in/leopoldo-miranda/",
+          url: "https://www.linkedin.com/in/mathewmodisseril/",
         },
         {
           name: "Github",
-          url: "https://github.com/leoMirandaa",
+          url: "https://github.com/Mat-Algo",
         },
       ],
     },
@@ -95,7 +98,7 @@ export const TeamSection = () => {
         </h2>
 
         <h2 className="text-3xl md:text-4xl text-center font-bold">
-          The Company Dream Team
+          The Dream Team
         </h2>
       </div>
 
@@ -109,13 +112,13 @@ export const TeamSection = () => {
               key={index}
               className="bg-muted/60 dark:bg-card flex flex-col h-full overflow-hidden group/hoverimg">
               <CardHeader className="p-0 gap-0">
-                <div className="h-full overflow-hidden">
+                <div className="h-full overflow-hidden ">
                   <Image
                     src={imageUrl}
                     alt=""
                     width={300}
                     height={300}
-                    className="w-full aspect-square object-cover saturate-0 transition-all duration-200 ease-linear size-full group-hover/hoverimg:saturate-100 group-hover/hoverimg:scale-[1.01]"
+                    className="w-full aspect-square  object-cover saturate-0 transition-all duration-200 ease-linear size-full group-hover/hoverimg:saturate-100 group-hover/hoverimg:scale-[1.01]"
                   />
                 </div>
                 <CardTitle className="py-6 pb-2 px-6">
