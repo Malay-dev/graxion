@@ -17,8 +17,9 @@ interface ReviewDialogProps {
   onOpenChange: (open: boolean) => void;
   question: string;
   resources?: {
-    videos?: { title: string; url: string }[];
-    articles?: { title: string; url: string }[];
+    video?: { title: string; url: string };
+    ref_videos?: { title: string; url: string }[];
+    ref_articles?: { title: string; url: string }[];
   };
 }
 
@@ -70,50 +71,49 @@ export function ReviewDialog({
 
           <TabsContent value="resources" className="flex-1 overflow-auto">
             <div className="space-y-6">
-              {resources?.videos && resources.videos.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Video Tutorials</h3>
+              {resources?.video &&
+                resources.ref_videos &&
+                resources.ref_videos.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Video Tutorials</h3>
 
-                  {/* Featured Video */}
-                  {resources.videos[0] && (
-                    <div className="aspect-video bg-muted rounded-md overflow-hidden">
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={resources.videos[0].url.replace(
-                          "watch?v=",
-                          "embed/"
-                        )}
-                        title={resources.videos[0].title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen></iframe>
+                    {/* Featured Video */}
+                    {resources.video && (
+                      <div className="aspect-video bg-muted rounded-md overflow-hidden">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={resources.video.url}
+                          title={resources.video.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen></iframe>
+                      </div>
+                    )}
+
+                    {/* Video List */}
+                    <div className="space-y-2">
+                      {resources.ref_videos.slice(1).map((video, index) => (
+                        <a
+                          key={index}
+                          href={video.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center p-3 rounded-md border hover:bg-muted transition-colors">
+                          <Youtube className="h-5 w-5 mr-2 text-red-500" />
+                          <span className="flex-1">{video.title}</span>
+                          <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                        </a>
+                      ))}
                     </div>
-                  )}
-
-                  {/* Video List */}
-                  <div className="space-y-2">
-                    {resources.videos.slice(1).map((video, index) => (
-                      <a
-                        key={index}
-                        href={video.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center p-3 rounded-md border hover:bg-muted transition-colors">
-                        <Youtube className="h-5 w-5 mr-2 text-red-500" />
-                        <span className="flex-1">{video.title}</span>
-                        <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                      </a>
-                    ))}
                   </div>
-                </div>
-              )}
+                )}
 
-              {resources?.articles && resources.articles.length > 0 && (
+              {resources?.ref_articles && resources.ref_articles.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Helpful Articles</h3>
                   <div className="space-y-2">
-                    {resources.articles.map((article, index) => (
+                    {resources.ref_articles.map((article, index) => (
                       <a
                         key={index}
                         href={article.url}

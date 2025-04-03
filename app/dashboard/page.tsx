@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CreateAssesmentCard from "@/components/CreateAssessmentCard";
 import AssessmentCard from "@/components/AssessmentCard";
 import { RoleSelectionPopup } from "@/components/RoleSelctionPopup";
+import { useSession } from "next-auth/react";
 const subjects = ["Physics", "Chemistry", "Maths", "Biology"];
 
 type Assessment = {
@@ -21,7 +22,8 @@ type Assessment = {
 
 const Dashboard = () => {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
-
+  const { data: session } = useSession();
+  const role = session?.user?.role;
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
@@ -52,7 +54,7 @@ const Dashboard = () => {
         {subjects.map((subject) => (
           <TabsContent key={subject} value={subject} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <CreateAssesmentCard subject={subject} />
+              {role === "Teacher" && <CreateAssesmentCard subject={subject} />}
               {assessments
                 .filter((assessment) => assessment.subject === subject)
                 .map((assessment) => (

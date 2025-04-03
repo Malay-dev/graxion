@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { ReviewDialog } from "./ReviewDialog";
 import { cn } from "@/lib/utils";
-import { ImageSquare } from "@phosphor-icons/react/dist/ssr";
+import { ImageSquare, SpinnerGap } from "@phosphor-icons/react/dist/ssr";
 
 interface ShortAnswerQuestionProps {
   id: string;
@@ -29,8 +29,9 @@ interface ShortAnswerQuestionProps {
   onAnswerChange?: (answer: string) => void;
   onImageUpload?: (imageUrl: string) => void;
   resources?: {
-    videos?: { title: string; url: string }[];
-    articles?: { title: string; url: string }[];
+    video?: { title: string; url: string };
+    ref_videos?: { title: string; url: string }[];
+    ref_articles?: { title: string; url: string }[];
   };
 }
 
@@ -48,6 +49,7 @@ export function ShortAnswerQuestion({
   const [answer, setAnswer] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [answerType, setAnswerType] = useState<"text" | "image">("text");
   console.log("ShortAnswerQuestion : id", id);
 
@@ -87,6 +89,39 @@ export function ShortAnswerQuestion({
 
   const handleSwitchToImage = () => {
     setAnswerType("image");
+  };
+
+  const handleReview = async () => {
+    setLoading(true);
+    const data = {
+      question: question,
+      expected_answer: expected_answer,
+      answer: answer,
+    };
+    console.log(data);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_FLASK_URL}/review/mcq`,
+        {
+          method: "POST", // Specify the HTTP method
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Response:", result);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -183,10 +218,20 @@ export function ShortAnswerQuestion({
             <Button
               variant="outline"
               size="sm"
-              className="gap-2 text-primary ml-auto"
-              onClick={() => setReviewOpen(true)}>
-              <Play className="h-4 w-4" />
-              Review
+              className="gap-2 text-primary"
+              onClick={handleReview}
+              disabled={loading}>
+              {loading ? (
+                <>
+                  <SpinnerGap className="mr-2 h-4 w-4 animate-spin" />
+                  Review
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4" />
+                  Review
+                </>
+              )}
             </Button>
           )}
         </CardFooter>

@@ -10,19 +10,19 @@ const users = [
     name: "John Doe",
     email: "teacher@example.com",
     role: "Teacher",
-    hashedPassword: bcrypt.hashSync("teacher123", 10), // Pre-hashed password
-    subjects: ["Mathematics", "Physics"], // Subjects the teacher handles
-    profilePicture: "/images/teacher-profile.jpg", // Optional profile picture
+    hashedPassword: bcrypt.hashSync("teacher123", 10),
+    subjects: ["Mathematics", "Physics"],
+    profilePicture: "/images/teacher-profile.jpg",
   },
   {
     id: "2",
     name: "Jane Smith",
     email: "student@example.com",
     role: "Student",
-    hashedPassword: bcrypt.hashSync("student123", 10), // Pre-hashed password
-    enrolledCourses: ["Mathematics", "Physics"], // Courses the student is enrolled in
-    profilePicture: "/images/student-profile.jpg", // Optional profile picture
-    gradeLevel: "10th Grade", // Grade level of the student
+    hashedPassword: bcrypt.hashSync("student123", 10),
+    enrolledCourses: ["Mathematics", "Physics"],
+    profilePicture: "/images/student-profile.jpg",
+    gradeLevel: "10th Grade",
   },
 ];
 
@@ -39,13 +39,11 @@ const authOptions: AuthOptions = {
           throw new Error("Email and password are required");
         }
 
-        // Find the user by email
         const user = users.find((user) => user.email === credentials.email);
         if (!user) {
           throw new Error("Invalid credentials");
         }
 
-        // Validate the password
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.hashedPassword
@@ -54,7 +52,6 @@ const authOptions: AuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        // Return the user object (excluding sensitive data like hashedPassword)
         const { ...userWithoutPassword } = user;
         return userWithoutPassword;
       },
