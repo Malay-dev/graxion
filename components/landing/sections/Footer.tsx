@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
-import { ChevronsDownIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export const FooterSection = () => {
   return (
@@ -10,7 +10,13 @@ export const FooterSection = () => {
           {/* Branding */}
           <div className="flex flex-col">
             <Link href="#" className="flex font-bold items-center">
-              <ChevronsDownIcon className="w-9 h-9 mr-2 bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg border border-secondary" />
+              <Image
+                src="/logo.png" // Ensure the logo.png file is in the public folder
+                alt="Graxion Logo"
+                width={36}
+                height={36}
+                className="rounded-lg w-9 h-9 mr-2 bg-gradient-to-tr from-[#E2E2E2] to-[#C9D6FF]"
+              />
               <h3 className="text-2xl">Graxion</h3>
             </Link>
             <p className="opacity-70 mt-2 text-sm">

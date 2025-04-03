@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CreateAssesmentCard from "@/components/CreateAssessmentCard";
 import AssessmentCard from "@/components/AssessmentCard";
-
+import { RoleSelectionPopup } from "@/components/RoleSelctionPopup";
 const subjects = ["Physics", "Chemistry", "Maths", "Biology"];
 
 type Assessment = {
@@ -74,6 +74,7 @@ const Dashboard = () => {
           </TabsContent>
         ))}
       </Tabs>
+      <RoleSelectionPopup />
     </div>
   );
 };

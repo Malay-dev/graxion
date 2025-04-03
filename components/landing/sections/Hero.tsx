@@ -22,7 +22,7 @@ export const HeroSection = () => {
           <div className="max-w-screen-md mx-auto text-center text-4xl md:text-6xl font-bold">
             <h1>
               Experience <br />
-              <span className="text-transparent px-2 bg-gradient-to-r from-[#D247BF] to-primary bg-clip-text">
+              <span className="text-transparent px-2 bg-gradient-to-r from-[#C9D6FF] to-primary bg-clip-text">
                 Graxion
               </span>
               Smarter Grading Platform
@@ -37,7 +37,7 @@ export const HeroSection = () => {
 
           <div className="space-y-4 md:space-y-0 md:space-x-4">
             <Button asChild className="w-5/6 md:w-1/4 font-bold group/arrow">
-              <a href="http://localhost:3000/auth/login">
+              <a href="http://localhost:3000/dashboard">
                 Get Started
                 <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
               </a>
