@@ -46,7 +46,7 @@ export default function AssessmentFormPopup({
   children: React.ReactNode;
 }>) {
   const [open, setOpen] = useState(false);
-  const [currentStage, setCurrentStage] = useState(2);
+  const [currentStage, setCurrentStage] = useState(1);
   const [assessmentData, setAssessmentData] = useState<AssessmentData>({
     title: "",
     description: "",

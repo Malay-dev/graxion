@@ -147,7 +147,7 @@ const Assessment = () => {
         marks += question.marks;
         correctness[question.id] = true;
       } else if (
-        question.type === "Short Answer" &&
+        question.type === "SHORT_ANSWER" &&
         userAnswer.text &&
         userAnswer.text.toLowerCase().trim() ===
           question.expected_answer.toLowerCase().trim()
@@ -155,7 +155,7 @@ const Assessment = () => {
         marks += question.marks;
         correctness[question.id] = true;
       } else if (
-        question.type === "Long Answer" &&
+        question.type === "LONG_ANSWER" &&
         userAnswer.text &&
         userAnswer.text.length > 0 &&
         userAnswer.text.length >= question.expected_answer.length * 0.5
@@ -282,7 +282,7 @@ const Assessment = () => {
                             />
                           )}
 
-                          {question.type === "Short Answer" && (
+                          {question.type === "SHORT_ANSWER" && (
                             <ShortAnswerQuestion
                               id={question.id}
                               question={question.text}
@@ -301,7 +301,7 @@ const Assessment = () => {
                             />
                           )}
 
-                          {question.type === "Long Answer" && (
+                          {question.type === "LONG_ANSWER" && (
                             <LongAnswerQuestion
                               id={question.id}
                               question={question.text}

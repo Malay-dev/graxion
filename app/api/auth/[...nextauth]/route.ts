@@ -62,6 +62,22 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET || "default_secret",
+  callbacks: {
+    async jwt({ token, user }) {
+      // Add role to the JWT token
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Add role to the session object
+      if (token) {
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

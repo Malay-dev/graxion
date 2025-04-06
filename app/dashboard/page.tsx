@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const { data: session } = useSession();
   const role = session?.user?.role;
+  console.log(session);
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
