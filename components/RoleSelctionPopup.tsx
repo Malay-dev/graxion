@@ -35,23 +35,20 @@ import {
 } from "@/components/ui/select";
 
 export function RoleSelectionPopup() {
-  const { data: session } = useSession();
-  const [open, setOpen] = useState(false);
+  const { data: session, status } = useSession();
+  console.log(session);
+  const [open, setOpen] = useState(true);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Check if role is already selected or stored in session storage
+  // Open the popup if the user is not logged in
   useEffect(() => {
-    const storedRole = sessionStorage.getItem("selectedRole");
-    if (storedRole) {
-      setSelectedRole(storedRole);
-      setOpen(false);
-    } else if (!session?.user?.role) {
-      setOpen(true);
-    } else {
-      setOpen(false);
+    if (status === "authenticated") {
+      setOpen(false); // Close the popup if the user is logged in
+    } else if (status === "unauthenticated") {
+      setOpen(true); // Open the popup if the user is not logged in
     }
-  }, [session]);
+  }, [status]);
 
   const handleRoleSelect = (value: string) => {
     setSelectedRole(value);
@@ -104,8 +101,8 @@ export function RoleSelectionPopup() {
     <Dialog
       open={open}
       onOpenChange={(newOpen) => {
-        // Only allow closing if a role is selected
-        if (!newOpen && !session?.user?.role) {
+        // Only allow closing if a role is selected or the user is logged in
+        if (!newOpen && status !== "authenticated") {
           return;
         }
         setOpen(newOpen);
