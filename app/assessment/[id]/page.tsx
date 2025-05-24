@@ -68,14 +68,11 @@ const Assessment = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/assessments/get/${params?.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`/api/assessments/${params?.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const result = await response.json();
       setAssessment_data(result);
       console.log(result);
