@@ -1,10 +1,10 @@
 import { db } from './firebase';
 import {
   collection,
-  addDoc,
+  doc,
+  setDoc,
   getDocs,
   getDoc,
-  doc,
 } from 'firebase/firestore';
 
 export interface Assessment {
@@ -18,8 +18,13 @@ const assessmentsCollectionRef = collection(db, 'assessments');
 
 export const addAssessment = async (assessment: Omit<Assessment, 'id'>): Promise<string> => {
   try {
-    const docRef = await addDoc(assessmentsCollectionRef, assessment);
-    return docRef.id;
+    const newDocRef = doc(assessmentsCollectionRef);
+    const newAssessment = {
+      ...assessment,
+      id: newDocRef.id,
+    };
+    await setDoc(newDocRef, newAssessment);
+    return newDocRef.id;
   } catch (error) {
     console.error('Error adding assessment:', error);
     throw error;
