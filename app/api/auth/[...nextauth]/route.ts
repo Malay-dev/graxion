@@ -26,6 +26,21 @@ const users = [
   },
 ];
 
+declare module "next-auth" {
+  interface User {
+    role?: string; // Add the role property
+  }
+
+  interface Session {
+    user?: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string | null; // Add role to the session user
+    };
+  }
+}
+
 const authOptions: AuthOptions = {
   providers: [
     Credentials({
@@ -73,10 +88,12 @@ const authOptions: AuthOptions = {
     async session({ session, token }) {
       // Add role to the session object
       if (token) {
-        session.user.role = token.role;
+        if (session.user) {
+          session.user.role = token?.role as string;
+        }
       }
-      return session;
-    },
+      return session;
+    },
   },
 };
 
