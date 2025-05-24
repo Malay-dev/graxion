@@ -25,7 +25,20 @@ const users = [
     gradeLevel: "10th Grade",
   },
 ];
+declare module "next-auth" {
+  interface User {
+    role?: string; // Add the role property
+  }
 
+  interface Session {
+    user?: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string | null; // Add role to the session user
+    };
+  }
+}
 const authOptions: AuthOptions = {
   providers: [
     Credentials({
@@ -64,16 +77,16 @@ const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "default_secret",
   callbacks: {
     async jwt({ token, user }) {
-      // Add role to the JWT token
       if (user) {
         token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      // Add role to the session object
       if (token) {
-        session.user.role = token.role;
+        if (session.user) {
+          session.user.role = token?.role as string;
+        }
       }
       return session;
     },
