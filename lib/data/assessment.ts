@@ -52,3 +52,19 @@ export const getAssessmentById = async (
     throw error;
   }
 };
+
+export const updateAssessment = async (
+  id: string,
+  data: Partial<Omit<Assessment, "id">>
+): Promise<void> => {
+  try {
+    if (!id || typeof id !== "string") {
+      throw new Error("Invalid assessment id provided to updateAssessment");
+    }
+    const docRef = doc(db, "assessments", id);
+    await setDoc(docRef, data, { merge: true });
+  } catch (error) {
+    console.error("Error updating assessment:", error);
+    throw error;
+  }
+};

@@ -56,7 +56,14 @@ export default function AssessmentFormPopup({
       if (!response.ok) {
         throw new Error("Failed to save assessment details");
       }
-
+      const result = await response.json();
+      console.log("Assessment created with ID:", result.id);
+      if (result.id) {
+        setAssessmentData((prev) => ({
+          ...prev,
+          id: result.id,
+        }));
+      }
       setCurrentStage(2);
     } catch (error) {
       console.error("Error saving assessment details:", error);
