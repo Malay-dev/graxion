@@ -15,19 +15,7 @@ import { QuestionsForm } from "./QuestionsForm";
 import { AssessmentPreview } from "./AssessmentPreview";
 import { ChevronLeft, ChevronRight, Save } from "lucide-react";
 
-export type AssessmentData = {
-  title: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  max_score: number;
-  no_st_attempted: number;
-  no_st_passed: number;
-  passing_score: number;
-  subject: string;
-  class: string;
-  questions: Question[];
-};
+import { Assessment } from "@/types";
 
 export type Question = {
   id: string;
@@ -47,7 +35,7 @@ export default function AssessmentFormPopup({
 }>) {
   const [open, setOpen] = useState(false);
   const [currentStage, setCurrentStage] = useState(1);
-  const [assessmentData, setAssessmentData] = useState<AssessmentData>({
+  const [assessmentData, setAssessmentData] = useState<Assessment>({
     title: "",
     description: "",
     start_date: "",
@@ -61,14 +49,14 @@ export default function AssessmentFormPopup({
     questions: [],
   });
 
-  const handleStage1Submit = async (data: Partial<AssessmentData>) => {
+  const handleStage1Submit = async (data: Partial<Assessment>) => {
     const updatedData = { ...assessmentData, ...data };
     setAssessmentData(updatedData);
     console.log("Stage 1 Data:", updatedData);
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/assessments/create`,
+        `/api/assessments`,
         {
           method: "POST",
           headers: {

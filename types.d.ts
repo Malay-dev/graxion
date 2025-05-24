@@ -10,10 +10,17 @@ export interface Assessment {
   id?: string;
   title: string;
   description: string;
-  questions: Question[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+  start_date: string;
+  end_date: string;
+  max_score: number;
+  no_st_attempted: number;
+  no_st_passed: number;
+  passing_score: number;
+  subject: string;
+  class: string;
+  questions?: Question[];
+};
+
 
 export interface User {
   id: string;
