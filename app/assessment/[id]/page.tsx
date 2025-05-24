@@ -43,8 +43,9 @@ type AssessmentData = {
     marks: number;
     answer_type: string;
     resources?: {
-      videos?: { title: string; url: string }[];
-      articles?: { title: string; url: string }[];
+      video?: { title: string; url: string };
+      ref_videos?: { title: string; url: string }[];
+      ref_articles?: { title: string; url: string }[];
     };
   }[];
 };
