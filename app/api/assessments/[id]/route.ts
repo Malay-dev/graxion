@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAssessmentById } from "@/lib/data/assessment";
+import { getAssessmentById, updateAssessment } from "@/lib/data/assessment";
 
 export async function GET(
   _request: NextRequest,
@@ -24,4 +24,20 @@ export async function GET(
       { status: 500 }
     );
   }
+
+  export async function PUT(request: NextRequest) {
+    try {
+      const body = await request.json();
+      const newId = await updateAssessment(body);
+      return NextResponse.json(
+        { message: "Assessment updated", id: newId },
+        { status: 201 }
+      );
+    } catch (error) {
+      console.error("Error updating assessment:", error);
+      return NextResponse.json(
+        { error: "Internal Server Error" },
+        { status: 500 }
+      );
+    }
 }
