@@ -35,8 +35,7 @@ import {
 } from "@/components/ui/select";
 
 export function RoleSelectionPopup() {
-  const { data: session, status } = useSession();
-  console.log(session);
+  const { status } = useSession();
   const [open, setOpen] = useState(true);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
