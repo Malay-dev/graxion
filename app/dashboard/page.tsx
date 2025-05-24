@@ -6,7 +6,7 @@ import AssessmentCard from "@/components/AssessmentCard";
 import { RoleSelectionPopup } from "@/components/RoleSelectionPopup";
 import { useSession } from "next-auth/react";
 
-import { Assessment } from "@/types";
+import { Assessment } from "@/lib/types";
 
 const subjects = ["Physics", "Chemistry", "Maths", "Biology"];
 

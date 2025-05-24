@@ -1,10 +1,19 @@
+export interface Option {
+  id: string;
+  text: string;
+}
+
 export interface Question {
   id?: string;
-  type: 'multiple-choice' | 'short-answer' | 'long-answer';
   text: string;
-  options?: string[]; // for multiple-choice
-  correctAnswer?: string | string[]; // for short-answer and long-answer, or multiple correct options for multiple-choice
+  type: string;
+  answer_type: string;
+  expected_answer: string;
+  image_url: string;
+  assessmentId: string;
+  options: Option[];
 }
+
 
 export interface Assessment {
   id?: string;

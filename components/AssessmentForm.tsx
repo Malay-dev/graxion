@@ -15,7 +15,7 @@ import { QuestionsForm } from "./QuestionsForm";
 import { AssessmentPreview } from "./AssessmentPreview";
 import { ChevronLeft, ChevronRight, Save } from "lucide-react";
 
-import { Assessment } from "@/types";
+import { Assessment } from "@/lib/types";
 
 export type Question = {
   id: string;
