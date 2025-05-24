@@ -3,22 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import CreateAssesmentCard from "@/components/CreateAssessmentCard";
 import AssessmentCard from "@/components/AssessmentCard";
-import { RoleSelectionPopup } from "@/components/RoleSelctionPopup";
+import { RoleSelectionPopup } from "@/components/RoleSelectionPopup";
 import { useSession } from "next-auth/react";
+
+import { Assessment } from "@/types";
+
 const subjects = ["Physics", "Chemistry", "Maths", "Biology"];
 
-type Assessment = {
-  id: string;
-  title: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  max_score: number;
-  no_st_attempted: number;
-  no_st_passed: number;
-  passing_score: number;
-  subject: string;
-};
 
 const Dashboard = () => {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -28,7 +19,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/assessments/get`,
+        `/assessments/get`,
         {
           headers: {
             "Content-Type": "application/json",
