@@ -24,20 +24,24 @@ export async function GET(
       { status: 500 }
     );
   }
+}
 
-  export async function PUT(request: NextRequest) {
-    try {
-      const body = await request.json();
-      const newId = await updateAssessment(body);
-      return NextResponse.json(
-        { message: "Assessment updated", id: newId },
-        { status: 201 }
-      );
-    } catch (error) {
-      console.error("Error updating assessment:", error);
-      return NextResponse.json(
-        { error: "Internal Server Error" },
-        { status: 500 }
-      );
-    }
+export async function PATCH(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
+  try {
+    const body = await request.json();
+    const newId = await updateAssessment(context.params.id, body);
+    return NextResponse.json(
+      { message: "Assessment updated", id: newId },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error updating assessment:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }

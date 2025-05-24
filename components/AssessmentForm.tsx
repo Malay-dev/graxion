@@ -88,7 +88,13 @@ export default function AssessmentFormPopup({
       if (!response.ok) {
         throw new Error("Failed to save questions");
       }
-
+      const result = await response.json();
+      if (result.questions) {
+        setAssessmentData((prev) => ({
+          ...prev,
+          questions: result.questions,
+        }));
+      }
       setCurrentStage(3);
     } catch (error) {
       console.error("Error saving questions:", error);
@@ -100,8 +106,8 @@ export default function AssessmentFormPopup({
     console.log("Final Assessment Data:", assessmentData);
 
     try {
-      const response = await fetch("/api/assessment/submit", {
-        method: "POST",
+      const response = await fetch(`/api/assessments/${assessmentData.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
