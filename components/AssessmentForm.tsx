@@ -70,7 +70,7 @@ export default function AssessmentFormPopup({
     console.log("Stage 2 Data:", updatedData);
 
     try {
-      const response = await fetch("/api/assessment/questions", {
+      const response = await fetch("/api/questions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,19 +1,13 @@
-export interface Option {
+export type Question = {
   id: string;
+  type: "Short Answer" | "Long Answer" | "MCQ";
   text: string;
-}
-
-export interface Question {
-  id?: string;
-  text: string;
-  type: string;
-  answer_type: string;
+  answer_type: "Text" | "Image";
+  choices?: string[];
+  image_url?: string;
   expected_answer: string;
-  image_url: string;
-  assessmentId: string;
-  options: Option[];
-}
-
+  marks: number;
+};
 
 export interface Assessment {
   id?: string;
@@ -28,7 +22,7 @@ export interface Assessment {
   subject: string;
   class: string;
   questions?: Question[];
-};
+}
 
 export interface User {
   id: string;

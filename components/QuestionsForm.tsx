@@ -35,7 +35,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Question } from "./AssessmentForm";
 import {
   Tooltip,
   TooltipContent,
@@ -43,6 +42,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ImagesSquare } from "@phosphor-icons/react/dist/ssr";
+
+import { Question } from "@/types";
 
 const questionSchema = z.object({
   type: z.enum(["Short Answer", "Long Answer", "MCQ"], {
