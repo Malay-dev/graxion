@@ -37,7 +37,7 @@ export const HeroSection = () => {
 
           <div className="space-y-4 md:space-y-0 md:space-x-4">
             <Button asChild className="w-5/6 md:w-1/4 font-bold group/arrow">
-              <a href="http://localhost:3000/dashboard">
+              <a href="/dashboard">
                 Get Started
                 <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
               </a>
