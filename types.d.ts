@@ -1,10 +1,13 @@
-export interface Question {
-  id?: string;
-  type: 'multiple-choice' | 'short-answer' | 'long-answer';
+export type Question = {
+  id: string;
+  type: "Short Answer" | "Long Answer" | "MCQ";
   text: string;
-  options?: string[]; // for multiple-choice
-  correctAnswer?: string | string[]; // for short-answer and long-answer, or multiple correct options for multiple-choice
-}
+  answer_type: "Text" | "Image";
+  choices?: string[];
+  image_url?: string;
+  expected_answer: string;
+  marks: number;
+};
 
 export interface Assessment {
   id?: string;
@@ -20,7 +23,6 @@ export interface Assessment {
   class: string;
   questions?: Question[];
 };
-
 
 export interface User {
   id: string;

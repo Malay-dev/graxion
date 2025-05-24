@@ -16,18 +16,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
-interface AssessmentCardProps {
-  id: string;
-  title: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  max_score: number;
-  no_st_attempted: number;
-  no_st_passed: number;
-  passing_score: number;
-  subject: string;
-}
+import { Assessment } from "@/types";
 
 export default function AssessmentCard({
   id,
@@ -40,7 +29,7 @@ export default function AssessmentCard({
   no_st_passed,
   passing_score,
   subject,
-}: AssessmentCardProps) {
+}: Assessment) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",

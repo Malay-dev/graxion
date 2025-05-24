@@ -15,18 +15,7 @@ import { QuestionsForm } from "./QuestionsForm";
 import { AssessmentPreview } from "./AssessmentPreview";
 import { ChevronLeft, ChevronRight, Save } from "lucide-react";
 
-import { Assessment } from "@/types";
-
-export type Question = {
-  id: string;
-  type: "Short Answer" | "Long Answer" | "MCQ";
-  text: string;
-  answer_type: "Text" | "Image";
-  choices?: string[];
-  image_url?: string;
-  expected_answer: string;
-  marks: number;
-};
+import { Assessment, Question } from "@/types";
 
 export default function AssessmentFormPopup({
   children,
@@ -36,6 +25,7 @@ export default function AssessmentFormPopup({
   const [open, setOpen] = useState(false);
   const [currentStage, setCurrentStage] = useState(1);
   const [assessmentData, setAssessmentData] = useState<Assessment>({
+    id: "",
     title: "",
     description: "",
     start_date: "",
@@ -55,16 +45,13 @@ export default function AssessmentFormPopup({
     console.log("Stage 1 Data:", updatedData);
 
     try {
-      const response = await fetch(
-        `/api/assessments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedData),
-        }
-      );
+      const response = await fetch(`/api/assessments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to save assessment details");
@@ -216,7 +203,7 @@ export default function AssessmentFormPopup({
               onSubmit={handleStage1Submit}
             />
           )}
-          {currentStage === 2 && (
+          {currentStage === 2 && assessmentData.questions && (
             <QuestionsForm
               initialQuestions={assessmentData.questions}
               onSubmit={handleStage2Submit}
