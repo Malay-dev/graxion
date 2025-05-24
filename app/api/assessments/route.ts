@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAssessments, addAssessment } from '@/lib/assessment';
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const data = await getAssessments();
     return NextResponse.json(data);

@@ -30,7 +30,6 @@ export interface Assessment {
   questions?: Question[];
 };
 
-
 export interface User {
   id: string;
   name?: string | null;
