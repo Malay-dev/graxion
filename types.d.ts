@@ -31,4 +31,13 @@ export interface User {
   image?: string | null;
 }
 
+export interface Submission {
+  id: number;
+  assessmentId: number;
+  studentId: number;
+  fileUrl: string;
+  done: boolean;
+}
+
+
 // Add any other common types you identify in your project
