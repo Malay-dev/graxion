@@ -46,7 +46,7 @@ import { ImagesSquare } from "@phosphor-icons/react/dist/ssr";
 import { Question } from "@/types";
 
 const questionSchema = z.object({
-  type: z.enum(["Short Answer", "Long Answer", "MCQ"], {
+  type: z.enum(["SHORT_ANSWER", "LONG_ANSWER", "MCQ"], {
     required_error: "Please select a question type",
   }),
   text: z
@@ -81,7 +81,7 @@ export function QuestionsForm({
   const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
-      type: "Short Answer",
+      type: "SHORT_ANSWER",
       text: "",
       answer_type: "Text",
       choices: [],
@@ -117,7 +117,7 @@ export function QuestionsForm({
     }
 
     form.reset({
-      type: "Short Answer",
+      type: "SHORT_ANSWER",
       text: "",
       answer_type: "Text",
       choices: [],
@@ -145,7 +145,7 @@ export function QuestionsForm({
     if (editingId === id) {
       setEditingId(null);
       form.reset({
-        type: "Short Answer",
+        type: "SHORT_ANSWER",
         text: "",
         answer_type: "Text",
         choices: [],
@@ -159,7 +159,7 @@ export function QuestionsForm({
   const handleCancelEdit = () => {
     setEditingId(null);
     form.reset({
-      type: "Short Answer",
+      type: "SHORT_ANSWER",
       text: "",
       answer_type: "Text",
       choices: [],
@@ -252,8 +252,8 @@ export function QuestionsForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Short Answer">Short Answer</SelectItem>
-                      <SelectItem value="Long Answer">Long Answer</SelectItem>
+                      <SelectItem value="SHORT_ANSWER">Short Answer</SelectItem>
+                      <SelectItem value="LONG_ANSWER">Long Answer</SelectItem>
                       <SelectItem value="MCQ">Multiple Choice (MCQ)</SelectItem>
                     </SelectContent>
                   </Select>

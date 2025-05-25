@@ -1,6 +1,6 @@
 export type Question = {
   id: string;
-  type: "Short Answer" | "Long Answer" | "MCQ";
+  type: "SHORT_ANSWER" | "LONG_ANSWER" | "MCQ";
   text: string;
   answer_type: "Text" | "Image";
   choices?: string[];
