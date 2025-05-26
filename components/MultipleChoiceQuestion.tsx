@@ -46,6 +46,7 @@ export function MultipleChoiceQuestion({
   onAnswerChange,
   resources,
 }: MultipleChoiceQuestionProps) {
+  console.log(options);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -38,7 +38,7 @@ type AssessmentData = {
     id: string;
     type: string;
     text: string;
-    options?: { option_id: string; id: string; text: string }[];
+    options?: { id: string; text: string }[];
     expected_answer: string;
     marks: number;
     answer_type: string;

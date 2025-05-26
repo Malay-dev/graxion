@@ -55,7 +55,7 @@ const questionSchema = z.object({
   answer_type: z.enum(["Text", "Image"], {
     required_error: "Please select an answer type",
   }),
-  choices: z.array(z.string()).optional(),
+  options: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
   image_url: z.string().optional(),
 });
 
@@ -74,7 +74,14 @@ export function QuestionsForm({
     initialQuestions || []
   );
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [choiceInputs, setChoiceInputs] = useState<string[]>(["", "", "", ""]);
+  const [optionInputs, setOptionInputs] = useState<
+    { id: string; text: string }[]
+  >([
+    { id: "0", text: "" },
+    { id: "1", text: "" },
+    { id: "2", text: "" },
+    { id: "3", text: "" },
+  ]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +91,7 @@ export function QuestionsForm({
       type: "SHORT_ANSWER",
       text: "",
       answer_type: "Text",
-      choices: [],
+      options: [],
       image_url: "",
     },
   });
@@ -98,10 +105,7 @@ export function QuestionsForm({
       type: values.type,
       text: values.text,
       answer_type: values.answer_type,
-      choices:
-        values.type === "MCQ"
-          ? choiceInputs.filter((choice) => choice.trim() !== "")
-          : undefined,
+      options: values.type === "MCQ" ? [...optionInputs] : undefined,
       image_url: imagePreview || undefined,
       expected_answer: "",
       marks: 1,
@@ -120,10 +124,15 @@ export function QuestionsForm({
       type: "SHORT_ANSWER",
       text: "",
       answer_type: "Text",
-      choices: [],
+      options: [],
       image_url: "",
     });
-    setChoiceInputs(["", "", "", ""]);
+    setOptionInputs([
+      { id: "0", text: "" },
+      { id: "1", text: "" },
+      { id: "2", text: "" },
+      { id: "3", text: "" },
+    ]);
     setImagePreview(null);
   };
 
@@ -133,10 +142,10 @@ export function QuestionsForm({
       type: question.type,
       text: question.text,
       answer_type: question.answer_type,
-      choices: question.choices,
+      options: question.options || [],
       image_url: question.image_url,
     });
-    setChoiceInputs(question.choices || ["", "", "", ""]);
+    setOptionInputs(question.options || []);
     setImagePreview(question.image_url || null);
   };
 
@@ -148,10 +157,15 @@ export function QuestionsForm({
         type: "SHORT_ANSWER",
         text: "",
         answer_type: "Text",
-        choices: [],
+        options: [],
         image_url: "",
       });
-      setChoiceInputs(["", "", "", ""]);
+      setOptionInputs([
+        { id: "0", text: "" },
+        { id: "1", text: "" },
+        { id: "2", text: "" },
+        { id: "3", text: "" },
+      ]);
       setImagePreview(null);
     }
   };
@@ -162,44 +176,49 @@ export function QuestionsForm({
       type: "SHORT_ANSWER",
       text: "",
       answer_type: "Text",
-      choices: [],
+      options: [],
       image_url: "",
     });
-    setChoiceInputs(["", "", "", ""]);
+    setOptionInputs([
+      { id: "0", text: "" },
+      { id: "1", text: "" },
+      { id: "2", text: "" },
+      { id: "3", text: "" },
+    ]);
     setImagePreview(null);
   };
 
-  const handleChoiceChange = (index: number, value: string) => {
-    const newChoices = [...choiceInputs];
-    newChoices[index] = value;
-    setChoiceInputs(newChoices);
+  const handleOptionChange = (index: number, value: string) => {
+    const newOptions = [...optionInputs];
+    newOptions[index].text = value;
+    setOptionInputs(newOptions);
     // Update the form field value
     form.setValue(
-      "choices",
-      newChoices.filter((c) => c.trim() !== ""),
+      "options",
+      newOptions.filter((c) => c.text.trim() !== ""),
       { shouldValidate: true }
     );
   };
 
-  const handleAddChoice = () => {
-    const newChoices = [...choiceInputs, ""];
-    setChoiceInputs(newChoices);
+  const handleAddOption = () => {
+    const newOptions = [...optionInputs, { id: uuidv4(), text: "" }];
+    setOptionInputs(newOptions);
     // Update the form field value
     form.setValue(
-      "choices",
-      newChoices.filter((c) => c.trim() !== ""),
+      "options",
+      newOptions.filter((c) => c.text.trim() !== ""),
       { shouldValidate: true }
     );
   };
 
-  const handleRemoveChoice = (index: number) => {
-    const newChoices = [...choiceInputs];
-    newChoices.splice(index, 1);
-    setChoiceInputs(newChoices);
+  const handleRemoveOption = (index: number) => {
+    const newOptions = [...optionInputs];
+    newOptions.splice(index, 1);
+    setOptionInputs(newOptions);
     // Update the form field value
     form.setValue(
-      "choices",
-      newChoices.filter((c) => c.trim() !== ""),
+      "options",
+      newOptions.filter((c) => c.text.trim() !== ""),
       { shouldValidate: true }
     );
   };
@@ -363,16 +382,16 @@ export function QuestionsForm({
           {questionType === "MCQ" && (
             <FormField
               control={form.control}
-              name="choices"
+              name="options"
               render={({ field }) => (
                 <FormItem className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <FormLabel>Answer Choices</FormLabel>
+                    <FormLabel>Answer Options</FormLabel>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={handleAddChoice}
+                      onClick={handleAddOption}
                       className="flex items-center gap-1">
                       <PlusCircle className="h-4 w-4" /> Add Choice
                     </Button>
@@ -380,34 +399,34 @@ export function QuestionsForm({
 
                   <FormControl>
                     <div className="space-y-2">
-                      {choiceInputs.map((choice, index) => (
+                      {optionInputs.map((option, index) => (
                         <div key={index} className="flex items-center gap-2">
                           <Input
-                            value={choice}
+                            value={option.text}
                             onChange={(e) => {
-                              handleChoiceChange(index, e.target.value);
+                              handleOptionChange(index, e.target.value);
                               // Update the form field value
-                              const newChoices = [...choiceInputs];
-                              newChoices[index] = e.target.value;
+                              const newOptions = [...optionInputs];
+                              newOptions[index].text = e.target.value;
                               field.onChange(
-                                newChoices.filter((c) => c.trim() !== "")
+                                newOptions.filter((c) => c.text.trim() !== "")
                               );
                             }}
                             placeholder={`Choice ${index + 1}`}
                             className="flex-1"
                           />
-                          {choiceInputs.length > 2 && (
+                          {optionInputs.length > 2 && (
                             <Button
                               type="button"
                               variant="ghost"
                               size="icon"
                               onClick={() => {
-                                handleRemoveChoice(index);
+                                handleRemoveOption(index);
                                 // Update the form field value after removing a choice
-                                const newChoices = [...choiceInputs];
-                                newChoices.splice(index, 1);
+                                const newOptions = [...optionInputs];
+                                newOptions.splice(index, 1);
                                 field.onChange(
-                                  newChoices.filter((c) => c.trim() !== "")
+                                  newOptions.filter((c) => c.text.trim() !== "")
                                 );
                               }}>
                               <Trash2 className="h-4 w-4" />
@@ -561,21 +580,21 @@ export function QuestionsForm({
                   <p className="font-medium">{question.text}</p>
 
                   {question.type === "MCQ" &&
-                    question.choices &&
-                    question.choices.length > 0 && (
+                    question.options &&
+                    question.options.length > 0 && (
                       <div className="mt-2 space-y-1">
                         <p className="text-sm text-muted-foreground">
-                          Choices:
+                          Options:
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {question.choices.map((choice, i) => (
+                          {question.options.map((option, i) => (
                             <div
                               key={i}
                               className="flex items-center gap-2 text-sm">
                               <div className="h-4 w-4 rounded-full border flex items-center justify-center">
                                 <div className="h-2 w-2 rounded-full bg-muted"></div>
                               </div>
-                              {choice}
+                              {option.text}
                             </div>
                           ))}
                         </div>
