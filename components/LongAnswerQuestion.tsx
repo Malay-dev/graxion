@@ -41,7 +41,7 @@ export function LongAnswerQuestion({
   marks,
   expected_answer,
   isSubmitted = false,
-  imageTypeAnswer = false,
+  imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
   resources,
