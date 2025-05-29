@@ -48,7 +48,7 @@ export const HeroSection = () => {
               variant="secondary"
               className="w-5/6 md:w-1/4 font-bold">
               <Link
-                href="https://github.com/nobruf/shadcn-landing-page.git"
+                href="https://github.com/Malay-dev/graxion"
                 target="_blank">
                 Github respository
               </Link>

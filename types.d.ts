@@ -3,7 +3,10 @@ export type Question = {
   type: "SHORT_ANSWER" | "LONG_ANSWER" | "MCQ";
   text: string;
   answer_type: "Text" | "Image";
-  choices?: string[];
+  options?: {
+    id: string;
+    text: string;
+  }[];
   image_url?: string;
   expected_answer: string;
   marks: number;
@@ -38,6 +41,5 @@ export interface Submission {
   fileUrl: string;
   done: boolean;
 }
-
 
 // Add any other common types you identify in your project

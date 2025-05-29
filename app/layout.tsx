@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Revolutionizing Learning with Instant AI-Powered Feedback",
   openGraph: {
     type: "website",
-    url: "https://github.com/nobruf/shadcn-landing-page.git",
+    url: "https://github.com/Malay-dev/graxion",
     title: "Graxion: Next Gen Grading and Assessment Platform",
     description: "Revolutionizing Learning with Instant AI-Powered Feedback",
     images: [
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: "https://github.com/nobruf/shadcn-landing-page.git",
+    site: "https://github.com/Malay-dev/graxion",
     title: "Graxion: Next Gen Grading and Assessment Platform",
     description: "Revolutionizing Learning with Instant AI-Powered Feedback",
     images: [
