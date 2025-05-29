@@ -58,12 +58,16 @@ export default function AssessmentCard({
 
   return (
     <Link href={`/assessment/${id}`}>
-      <Card className="overflow-hidden border shadow-lg cursor-pointer hover:border-white">
+      <Card className="overflow-hidden border shadow-lg cursor-pointer hover:border-white min-h-[500px]">
         <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-4 space-y-0">
           <div className="flex gap-2 justify-between items-start">
             <div className="min-h-20">
-              <CardTitle className="text-xl font-bold">{title}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">ID: {id}</p>
+              <CardTitle className="text-xl font-bold line-clamp-2">
+                {title}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1 text-nowrap">
+                ID: {id}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Badge
@@ -77,7 +81,7 @@ export default function AssessmentCard({
           </div>
         </CardHeader>
         <CardContent className="pt-2">
-          <p className="text-sm text-muted-foreground min-h-10 mb-6">
+          <p className="text-sm text-muted-foreground min-h-10 mb-6 line-clamp-3">
             {description}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

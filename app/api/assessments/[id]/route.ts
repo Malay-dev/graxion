@@ -3,10 +3,10 @@ import { getAssessmentById, updateAssessment } from "@/lib/data/assessment";
 
 export async function GET(
   _request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     const assessment = await getAssessmentById(id);
 
     if (!assessment) {
@@ -28,11 +28,12 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
-    const newId = await updateAssessment(context.params.id, body);
+    const { id } = await context.params;
+    const newId = await updateAssessment(id, body);
     return NextResponse.json(
       { message: "Assessment updated", id: newId },
       { status: 201 }

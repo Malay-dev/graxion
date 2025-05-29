@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { PresetShare } from "@/components/PresetShare";
+import { ArrowUUpLeft } from "@phosphor-icons/react/dist/ssr";
+import { useRouter } from "next/navigation";
 
 interface AssessmentSidebarProps {
   id: string;
@@ -47,6 +49,7 @@ export function AssessmentSidebar({
   onSave,
   submitDisabled,
 }: AssessmentSidebarProps) {
+  const router = useRouter();
   const progress = (questionsAnswered / totalQuestions) * 100;
   const formattedStartDate = startDate.toLocaleDateString();
   const formattedEndDate = endDate.toLocaleDateString();
@@ -129,7 +132,7 @@ export function AssessmentSidebar({
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col space-y-2">
+      <CardFooter className="flex flex-col space-y-2 h-full">
         {!isSubmitted ? (
           <>
             <Button
@@ -150,7 +153,14 @@ export function AssessmentSidebar({
             Share Report
           </Button>
         )}
+
         {!isSubmitted && <PresetShare id={id} />}
+        <Button
+          className="w-full mt-20 cursor-pointer"
+          onClick={() => router.push("/dashboard")}
+          variant="destructive">
+          <ArrowUUpLeft size={32} /> Dashboard
+        </Button>
       </CardFooter>
     </Card>
   );
