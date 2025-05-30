@@ -57,6 +57,7 @@ const questionSchema = z.object({
   }),
   options: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
   image_url: z.string().optional(),
+  expected_answer: z.string().optional(),
 });
 
 interface QuestionsFormProps {
@@ -93,6 +94,7 @@ export function QuestionsForm({
       answer_type: "Text",
       options: [],
       image_url: "",
+      expected_answer: "",
     },
   });
 
@@ -107,7 +109,7 @@ export function QuestionsForm({
       answer_type: values.answer_type,
       options: values.type === "MCQ" ? [...optionInputs] : undefined,
       image_url: imagePreview || undefined,
-      expected_answer: "",
+      expected_answer: values.expected_answer || "",
       marks: 1,
     };
 
@@ -126,6 +128,7 @@ export function QuestionsForm({
       answer_type: "Text",
       options: [],
       image_url: "",
+      expected_answer: "",
     });
     setOptionInputs([
       { id: "0", text: "" },
@@ -144,6 +147,7 @@ export function QuestionsForm({
       answer_type: question.answer_type,
       options: question.options || [],
       image_url: question.image_url,
+      expected_answer: question.expected_answer || "",
     });
     setOptionInputs(question.options || []);
     setImagePreview(question.image_url || null);
@@ -159,6 +163,7 @@ export function QuestionsForm({
         answer_type: "Text",
         options: [],
         image_url: "",
+        expected_answer: "",
       });
       setOptionInputs([
         { id: "0", text: "" },
@@ -178,6 +183,7 @@ export function QuestionsForm({
       answer_type: "Text",
       options: [],
       image_url: "",
+      expected_answer: "",
     });
     setOptionInputs([
       { id: "0", text: "" },
@@ -379,6 +385,81 @@ export function QuestionsForm({
             )}
           />
 
+          {questionType !== "MCQ" && (
+            <FormField
+              control={form.control}
+              name="expected_answer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Expected Answer</FormLabel>
+                  <div className="space-y-2">
+                    {/* Math symbol toolbar, similar to question text */}
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {[
+                        { symbol: "π", label: "Pi" },
+                        { symbol: "√", label: "Square Root" },
+                        { symbol: "∑", label: "Summation" },
+                        { symbol: "∫", label: "Integral" },
+                        { symbol: "±", label: "Plus-Minus" },
+                        { symbol: "∞", label: "Infinity" },
+                        { symbol: "θ", label: "Theta" },
+                        { symbol: "Δ", label: "Delta" },
+                      ].map((item) => (
+                        <TooltipProvider key={item.symbol}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const textarea = document.getElementById(
+                                    "expected-answer"
+                                  ) as HTMLTextAreaElement;
+                                  if (textarea) {
+                                    const start = textarea.selectionStart;
+                                    const end = textarea.selectionEnd;
+                                    const text = field.value;
+                                    const newText =
+                                      text?.substring(0, start) +
+                                      item.symbol +
+                                      text?.substring(end);
+                                    field.onChange(newText);
+
+                                    setTimeout(() => {
+                                      textarea.focus();
+                                      textarea.setSelectionRange(
+                                        start + item.symbol.length,
+                                        start + item.symbol.length
+                                      );
+                                    }, 0);
+                                  }
+                                }}>
+                                {item.symbol}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{item.label}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+                    </div>
+                    <FormControl>
+                      <Textarea
+                        id="expected-answer"
+                        placeholder="Enter the expected answer"
+                        className="min-h-[80px]"
+                        {...field}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           {questionType === "MCQ" && (
             <FormField
               control={form.control}
@@ -433,6 +514,39 @@ export function QuestionsForm({
                             </Button>
                           )}
                         </div>
+                      ))}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          {questionType === "MCQ" && (
+            <FormField
+              control={form.control}
+              name="expected_answer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Expected Answer</FormLabel>
+                  <FormControl>
+                    <div className="flex flex-col  gap-2">
+                      {optionInputs.map((option, idx) => (
+                        <label
+                          key={option.id}
+                          className="flex items-center gap-2 cursor-pointer">
+                          <span>
+                            {String.fromCharCode(97 + idx) + "."} {option.text}
+                          </span>
+                          <Input
+                            type="radio"
+                            name="expected_answer"
+                            value={option.id}
+                            checked={field.value === option.id}
+                            onChange={() => field.onChange(option.id)}
+                          />
+                        </label>
                       ))}
                     </div>
                   </FormControl>
