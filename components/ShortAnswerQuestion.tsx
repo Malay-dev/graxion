@@ -41,7 +41,7 @@ export function ShortAnswerQuestion({
   marks,
   expected_answer,
   isSubmitted = false,
-  imageTypeAnswer = false,
+  imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
   resources,
@@ -164,7 +164,7 @@ export function ShortAnswerQuestion({
             </div>
           )}
 
-          {(answerType === "text" || !imageTypeAnswer) && (
+          {(!imageTypeAnswer || (imageTypeAnswer && answerType === "text")) && (
             <Textarea
               placeholder="Type your answer here..."
               value={answer}
@@ -193,6 +193,8 @@ export function ShortAnswerQuestion({
                   src={imageUrl || "/placeholder.svg"}
                   alt="Uploaded answer"
                   className="max-h-60 w-full object-contain"
+                  width={500}
+                  height={300}
                 />
               </div>
             </div>

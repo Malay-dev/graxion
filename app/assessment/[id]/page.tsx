@@ -358,7 +358,7 @@ const Assessment = () => {
                               onImageUpload={(imageUrl) =>
                                 handleImageUpload(question.id, imageUrl)
                               }
-                              imageTypeAnswer={question.answer_type === "IMAGE"}
+                              imageTypeAnswer={question.answer_type === "Image"}
                               resources={question.resources}
                             />
                           )}
