@@ -1,21 +1,21 @@
-import { getAllSubmissions, submitAssessment } from '@/lib/data/submission';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { submitAssessment } from '@/lib/data/submission';
 
-export async function GET() {
-  try {
-    const submissions = await getAllSubmissions();
-    return NextResponse.json(submissions);
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
-}
 
-export async function POST(req: NextRequest) {
+  const { assessmentId, studentId, fileUrl, questionAnswers } = req.body;
+
+  if (!assessmentId || !studentId || !fileUrl || !questionAnswers) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
   try {
-    const { assessmentId, studentId, fileUrl } = await req.json();
-    await submitAssessment(assessmentId, studentId, fileUrl);
-    return NextResponse.json({ message: 'Submission created successfully' });
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    await submitAssessment(assessmentId, studentId, fileUrl, questionAnswers);
+    return res.status(200).json({ message: 'Submission successful' });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message || 'Server Error' });
   }
 }
