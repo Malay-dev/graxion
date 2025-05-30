@@ -28,7 +28,9 @@ interface AssessmentSidebarProps {
   passingScore: number;
   earnedMarks?: number;
   isSubmitted?: boolean;
+  isEvaluated?: boolean;
   onSubmit?: () => void;
+  onEvaluate?: () => void;
   onSave?: () => void;
   submitDisabled?: boolean;
 }
@@ -45,7 +47,9 @@ export function AssessmentSidebar({
   maxScore,
   earnedMarks,
   isSubmitted = false,
+  isEvaluated = false,
   onSubmit,
+  onEvaluate,
   onSave,
   submitDisabled,
 }: AssessmentSidebarProps) {
@@ -115,7 +119,12 @@ export function AssessmentSidebar({
             <span className="text-sm font-medium">Total Marks:</span>
             <span className="text-sm font-medium">{maxScore}</span>
           </div>
-          {isSubmitted && earnedMarks !== undefined && (
+          {isSubmitted && !isEvaluated && (
+            <div className="flex text-center items-center justify-center mt-2">
+              <span className="text-sm  font-medium">Ready for evaluation</span>
+            </div>
+          )}
+          {isSubmitted && isEvaluated && earnedMarks !== undefined && (
             <div className="flex justify-between">
               <span className="text-sm font-medium">Your Score:</span>
               <span className="text-sm font-medium">
@@ -123,7 +132,7 @@ export function AssessmentSidebar({
               </span>
             </div>
           )}
-          {isSubmitted && earnedMarks !== undefined && (
+          {isSubmitted && isEvaluated && earnedMarks !== undefined && (
             <div className="mt-4 flex items-center justify-center">
               <div className="rounded-full bg-primary/10 p-3">
                 <Award className="h-8 w-8 text-primary" />
@@ -133,7 +142,7 @@ export function AssessmentSidebar({
         </div>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2 h-full">
-        {!isSubmitted ? (
+        {!isSubmitted && !isEvaluated ? (
           <>
             <Button
               className="w-full"
@@ -147,6 +156,14 @@ export function AssessmentSidebar({
               Save Progress
             </Button>
           </>
+        ) : isSubmitted && !isEvaluated ? (
+          <Button
+            className="w-full"
+            onClick={onEvaluate}
+            disabled={submitDisabled}>
+            <Save className="mr-2 h-4 w-4" />
+            Send for Evaluation
+          </Button>
         ) : (
           <Button className="w-full" variant="outline">
             <Share2 className="mr-2 h-4 w-4" />

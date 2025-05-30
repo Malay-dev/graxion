@@ -34,6 +34,8 @@ type AssessmentData = {
   max_score: number;
   passing_score: number;
   subject: string;
+  submitted: boolean;
+  evaluated: boolean;
   questions: {
     id: string;
     type: string;
@@ -48,6 +50,13 @@ type AssessmentData = {
       ref_articles?: { title: string; url: string }[];
     };
   }[];
+  evaluation_results?: {
+    question_id: string;
+    marks: number;
+    is_correct: boolean;
+    feedback?: string;
+    analysis?: string;
+  }[];
 };
 
 const Assessment = () => {
@@ -55,6 +64,9 @@ const Assessment = () => {
     Record<string, { text?: string; image?: string }>
   >({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isEvaluated, setIsEvaluated] = useState(false);
+  const [evaluationLoading, setEvaluationLoading] = useState(false);
+
   const [earnedMarks, setEarnedMarks] = useState<number | undefined>(undefined);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [completionStatus, setCompletionStatus] = useState<
@@ -75,7 +87,25 @@ const Assessment = () => {
       });
       const result = await response.json();
       setAssessment_data(result);
-      console.log(result);
+      setIsSubmitted(result.submitted);
+      setIsEvaluated(result.evaluated);
+      if (result.evaluated && result.evaluation_results) {
+        let marks = 0;
+        const correctnessMap: Record<string, boolean> = {};
+        result.evaluation_results.forEach(
+          (item: {
+            marks: number;
+            question_id: string | number;
+            is_correct: boolean;
+          }) => {
+            marks += item.marks;
+            correctnessMap[item.question_id] = item.is_correct;
+          }
+        );
+
+        setEarnedMarks(marks);
+        setCorrectness(correctnessMap);
+      }
     };
     fetchData();
   }, [params?.id]);
@@ -129,60 +159,90 @@ const Assessment = () => {
     }
   };
 
-  const calculateEarnedMarks = () => {
-    let marks = 0;
-    const correctness: Record<string, boolean> = {};
+  // const calculateEarnedMarks = () => {
+  //   let marks = 0;
+  //   const correctness: Record<string, boolean> = {};
 
-    assessment_data?.questions.forEach((question) => {
-      const userAnswer = answers[question.id];
+  //   assessment_data?.questions.forEach((question) => {
+  //     const userAnswer = answers[question.id];
 
-      if (!userAnswer) return;
+  //     if (!userAnswer) return;
 
-      if (
-        question.type === "MCQ" &&
-        userAnswer.text === question.expected_answer
-      ) {
-        marks += question.marks;
-        correctness[question.id] = true;
-      } else if (
-        question.type === "SHORT_ANSWER" &&
-        userAnswer.text &&
-        userAnswer.text.toLowerCase().trim() ===
-          question.expected_answer.toLowerCase().trim()
-      ) {
-        marks += question.marks;
-        correctness[question.id] = true;
-      } else if (
-        question.type === "LONG_ANSWER" &&
-        userAnswer.text &&
-        userAnswer.text.length > 0 &&
-        userAnswer.text.length >= question.expected_answer.length * 0.5
-      ) {
-        marks += question.marks;
-        correctness[question.id] = true;
-      } else {
-        correctness[question.id] = false;
-      }
+  //     if (
+  //       question.type === "MCQ" &&
+  //       userAnswer.text === question.expected_answer
+  //     ) {
+  //       marks += question.marks;
+  //       correctness[question.id] = true;
+  //     } else if (
+  //       question.type === "SHORT_ANSWER" &&
+  //       userAnswer.text &&
+  //       userAnswer.text.toLowerCase().trim() ===
+  //         question.expected_answer.toLowerCase().trim()
+  //     ) {
+  //       marks += question.marks;
+  //       correctness[question.id] = true;
+  //     } else if (
+  //       question.type === "LONG_ANSWER" &&
+  //       userAnswer.text &&
+  //       userAnswer.text.length > 0 &&
+  //       userAnswer.text.length >= question.expected_answer.length * 0.5
+  //     ) {
+  //       marks += question.marks;
+  //       correctness[question.id] = true;
+  //     } else {
+  //       correctness[question.id] = false;
+  //     }
+  //   });
+
+  //   return { marks, correctness };
+  // };
+
+  const handleSubmit = async () => {
+    await fetch(`/api/assessments/${params?.id}/submit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers }),
     });
-
-    return { marks, correctness };
-  };
-
-  const handleSubmit = () => {
-    const { marks, correctness } = calculateEarnedMarks();
-    setEarnedMarks(marks);
     setIsSubmitted(true);
-    setShowSubmitDialog(false);
-    setCorrectness(correctness);
-
     toast("Assessment Submitted", {
-      description: `You've scored ${marks} out of ${assessment_data?.max_score} marks.`,
+      description: "Submission saved. Awaiting evaluation.",
     });
   };
 
   const handleSave = () => {
     toast("Progress Saved", {
       description: "Your progress has been saved successfully.",
+    });
+  };
+
+  const handleEvaluate = async () => {
+    setEvaluationLoading(true);
+    const response = await fetch(`/api/assessments/${params?.id}/evaluate`, {
+      method: "POST",
+    });
+    const result = await response.json();
+    if (result.evaluated && result.evaluation_results) {
+      let marks = 0;
+      const correctnessMap: Record<string, boolean> = {};
+      result.evaluation_results.forEach(
+        (item: {
+          marks: number;
+          question_id: string | number;
+          is_correct: boolean;
+        }) => {
+          marks += item.marks;
+          correctnessMap[item.question_id] = item.is_correct;
+        }
+      );
+
+      setEarnedMarks(marks);
+      setCorrectness(correctnessMap);
+    }
+    setIsEvaluated(true);
+    setEvaluationLoading(false);
+    toast("Assessment Evaluated", {
+      description: `You've scored ${result.earnedMarks}`,
     });
   };
 
@@ -193,7 +253,9 @@ const Assessment = () => {
   if (!assessment_data) {
     return <div>Loading...</div>; // Show a loading state while data is being fetched
   }
-
+  if (evaluationLoading) {
+    return <div>Loading...</div>; // Show a loading state while data is being fetched
+  }
   return (
     <Tabs defaultValue="complete" className="flex-1 px-6">
       <div className="container h-full py-6">
@@ -212,7 +274,9 @@ const Assessment = () => {
               totalQuestions={assessment_data.questions.length}
               earnedMarks={earnedMarks}
               isSubmitted={isSubmitted}
+              isEvaluated={isEvaluated}
               onSubmit={() => setShowSubmitDialog(true)}
+              onEvaluate={handleEvaluate}
               onSave={handleSave}
               submitDisabled={!allQuestionsAnswered}
             />
