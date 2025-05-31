@@ -33,6 +33,7 @@ interface AssessmentSidebarProps {
   onEvaluate?: () => void;
   onSave?: () => void;
   submitDisabled?: boolean;
+  evaluateDisabled?: boolean;
 }
 
 export function AssessmentSidebar({
@@ -52,6 +53,7 @@ export function AssessmentSidebar({
   onEvaluate,
   onSave,
   submitDisabled,
+  evaluateDisabled,
 }: AssessmentSidebarProps) {
   const router = useRouter();
   const progress = (questionsAnswered / totalQuestions) * 100;
@@ -158,9 +160,9 @@ export function AssessmentSidebar({
           </>
         ) : isSubmitted && !isEvaluated ? (
           <Button
-            className="w-full"
+            className="w-full cursor-pointer"
             onClick={onEvaluate}
-            disabled={submitDisabled}>
+            disabled={evaluateDisabled}>
             <Save className="mr-2 h-4 w-4" />
             Send for Evaluation
           </Button>

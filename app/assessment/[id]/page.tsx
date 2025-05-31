@@ -42,6 +42,7 @@ type AssessmentData = {
     text: string;
     options?: { id: string; text: string }[];
     expected_answer: string;
+    answer?: string;
     marks: number;
     answer_type: string;
     resources?: {
@@ -87,6 +88,7 @@ const Assessment = () => {
       });
       const result = await response.json();
       setAssessment_data(result);
+      console.log(result);
       setIsSubmitted(result.submitted);
       setIsEvaluated(result.evaluated);
       if (result.evaluated && result.evaluation_results) {
@@ -199,7 +201,7 @@ const Assessment = () => {
   // };
 
   const handleSubmit = async () => {
-    await fetch(`/api/assessments/${params?.id}/submit`, {
+    await fetch(`/api/submit/${params?.id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ answers }),
@@ -218,7 +220,7 @@ const Assessment = () => {
 
   const handleEvaluate = async () => {
     setEvaluationLoading(true);
-    const response = await fetch(`/api/assessments/${params?.id}/evaluate`, {
+    const response = await fetch(`/api/evaluate/${params?.id}`, {
       method: "POST",
     });
     const result = await response.json();
@@ -279,6 +281,7 @@ const Assessment = () => {
               onEvaluate={handleEvaluate}
               onSave={handleSave}
               submitDisabled={!allQuestionsAnswered}
+              evaluateDisabled={!isSubmitted || isEvaluated}
             />
           </div>
           <div className="md:order-1">
@@ -335,8 +338,10 @@ const Assessment = () => {
                               options={question.options || []}
                               marks={question.marks}
                               expected_answer={question.expected_answer}
+                              answer={question?.answer}
                               isSubmitted={isSubmitted}
-                              showCorrectAnswer={isSubmitted}
+                              isEvaluated={isEvaluated}
+                              showCorrectAnswer={isSubmitted && isEvaluated}
                               onAnswerChange={(answer) =>
                                 handleAnswerChange(question.id, answer)
                               }
@@ -350,8 +355,10 @@ const Assessment = () => {
                               question={question.text}
                               marks={question.marks}
                               expected_answer={question.expected_answer}
+                              answer={question?.answer}
                               isSubmitted={isSubmitted}
-                              showCorrectAnswer={isSubmitted}
+                              isEvaluated={isEvaluated}
+                              showCorrectAnswer={isSubmitted && isEvaluated}
                               onAnswerChange={(answer) =>
                                 handleAnswerChange(question.id, answer)
                               }
@@ -369,8 +376,10 @@ const Assessment = () => {
                               question={question.text}
                               marks={question.marks}
                               expected_answer={question.expected_answer}
+                              answer={question?.answer}
                               isSubmitted={isSubmitted}
-                              showCorrectAnswer={isSubmitted}
+                              isEvaluated={isEvaluated}
+                              showCorrectAnswer={isSubmitted && isEvaluated}
                               onAnswerChange={(answer) =>
                                 handleAnswerChange(question.id, answer)
                               }

@@ -23,8 +23,10 @@ interface ShortAnswerQuestionProps {
   question: string;
   marks: number;
   expected_answer: string;
+  answer?: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
+  isEvaluated?: boolean;
   imageTypeAnswer?: boolean;
   onAnswerChange?: (answer: string) => void;
   onImageUpload?: (imageUrl: string) => void;
@@ -40,27 +42,30 @@ export function ShortAnswerQuestion({
   question,
   marks,
   expected_answer,
+  answer,
   isSubmitted = false,
+  isEvaluated = false,
   imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
   resources,
 }: ShortAnswerQuestionProps) {
-  const [answer, setAnswer] = useState<string>("");
+  const [currentAnswer, setCurrentAnswer] = useState<string>(answer || "");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [answerType, setAnswerType] = useState<"text" | "image">("text");
   console.log("ShortAnswerQuestion : id", id);
-
+  console.log(answer);
   const isCorrect =
     isSubmitted &&
-    answer.toLowerCase().trim() === expected_answer.toLowerCase().trim();
-  const isIncorrect = isSubmitted && answer && !isCorrect;
+    isEvaluated &&
+    currentAnswer.toLowerCase().trim() === expected_answer.toLowerCase().trim();
+  const isIncorrect = isSubmitted && isEvaluated && currentAnswer && !isCorrect;
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!isSubmitted) {
-      setAnswer(e.target.value);
+      setCurrentAnswer(e.target.value);
       if (onAnswerChange) {
         onAnswerChange(e.target.value);
       }
@@ -174,7 +179,7 @@ export function ShortAnswerQuestion({
             />
           )}
 
-          {isSubmitted && (
+          {isSubmitted && isEvaluated && (
             <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950/20">
               <p className="text-sm font-medium text-green-800 dark:text-green-400">
                 Correct Answer:

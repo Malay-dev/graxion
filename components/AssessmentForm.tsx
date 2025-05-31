@@ -37,6 +37,8 @@ export default function AssessmentFormPopup({
     subject: "",
     class: "",
     questions: [],
+    submitted: false,
+    evaluated: false,
   });
 
   const handleStage1Submit = async (data: Partial<Assessment>) => {
@@ -122,6 +124,7 @@ export default function AssessmentFormPopup({
       setCurrentStage(1);
       // Reset form data if needed
       setAssessmentData({
+        id: "",
         title: "",
         description: "",
         start_date: "",
@@ -133,6 +136,8 @@ export default function AssessmentFormPopup({
         subject: "",
         class: "",
         questions: [],
+        submitted: false,
+        evaluated: false,
       });
     } catch (error) {
       console.error("Error submitting assessment:", error);

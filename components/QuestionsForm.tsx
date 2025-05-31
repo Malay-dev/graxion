@@ -129,7 +129,7 @@ export function QuestionsForm({
       options: [],
       image_url: "",
       expected_answer: "",
-    });
+    } as z.infer<typeof questionSchema>);
     setOptionInputs([
       { id: "0", text: "" },
       { id: "1", text: "" },
@@ -140,15 +140,22 @@ export function QuestionsForm({
   };
 
   const handleEditQuestion = (question: Question) => {
-    setEditingId(question.id);
+    setEditingId(null);
     form.reset({
-      type: question.type,
-      text: question.text,
-      answer_type: question.answer_type,
-      options: question.options || [],
-      image_url: question.image_url,
-      expected_answer: question.expected_answer || "",
-    });
+      type: "SHORT_ANSWER",
+      text: "",
+      answer_type: "Text",
+      options: [],
+      image_url: "",
+      expected_answer: "",
+    } as z.infer<typeof questionSchema>);
+    setOptionInputs([
+      { id: "0", text: "" },
+      { id: "1", text: "" },
+      { id: "2", text: "" },
+      { id: "3", text: "" },
+    ]);
+    setImagePreview(null);
     setOptionInputs(question.options || []);
     setImagePreview(question.image_url || null);
   };
@@ -164,7 +171,7 @@ export function QuestionsForm({
         options: [],
         image_url: "",
         expected_answer: "",
-      });
+      } as z.infer<typeof questionSchema>);
       setOptionInputs([
         { id: "0", text: "" },
         { id: "1", text: "" },

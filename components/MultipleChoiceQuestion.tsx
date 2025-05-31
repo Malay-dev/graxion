@@ -26,8 +26,10 @@ interface MultipleChoiceQuestionProps {
   options: Option[];
   marks: number;
   expected_answer: string;
+  answer?: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
+  isEvaluated?: boolean;
   onAnswerChange?: (answerId: string) => void;
   resources?: {
     video?: { title: string; url: string };
@@ -42,17 +44,23 @@ export function MultipleChoiceQuestion({
   options,
   marks,
   expected_answer,
+  answer,
   isSubmitted = false,
+  isEvaluated = false,
   onAnswerChange,
   resources,
 }: MultipleChoiceQuestionProps) {
-  console.log(options);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  console.log(answer);
+  const [selectedOption, setSelectedOption] = useState<string>(answer || "");
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isCorrect = isSubmitted && selectedOption === expected_answer;
+  const isCorrect =
+    isSubmitted && isEvaluated && selectedOption === expected_answer;
   const isIncorrect =
-    isSubmitted && selectedOption && selectedOption !== expected_answer;
+    isSubmitted &&
+    isEvaluated &&
+    selectedOption &&
+    selectedOption !== expected_answer;
 
   const handleOptionChange = (value: string) => {
     if (!isSubmitted) {
@@ -126,9 +134,10 @@ export function MultipleChoiceQuestion({
               <div
                 key={option.id}
                 className={`flex items-center space-x-2 rounded-md border p-3 ${
-                  isSubmitted && expected_answer === option.id
+                  isSubmitted && isEvaluated && expected_answer === option.id
                     ? "border-green-500 bg-green-50 dark:bg-green-950/20"
                     : isSubmitted &&
+                      isEvaluated &&
                       selectedOption === option.id &&
                       selectedOption !== expected_answer
                     ? "border-red-500 bg-red-50 dark:bg-red-950/20"
@@ -143,10 +152,13 @@ export function MultipleChoiceQuestion({
                   className="flex-grow cursor-pointer">
                   {option.text}
                 </Label>
-                {isSubmitted && expected_answer === option.id && (
-                  <Check className="h-4 w-4 text-green-500" />
-                )}
                 {isSubmitted &&
+                  isEvaluated &&
+                  expected_answer === option.id && (
+                    <Check className="h-4 w-4 text-green-500" />
+                  )}
+                {isSubmitted &&
+                  isEvaluated &&
                   selectedOption === option.id &&
                   selectedOption !== expected_answer && (
                     <X className="h-4 w-4 text-red-500" />

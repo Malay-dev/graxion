@@ -3,11 +3,13 @@ export type Question = {
   type: "SHORT_ANSWER" | "LONG_ANSWER" | "MCQ" | string;
   text: string;
   answer_type: "Text" | "Image" | string;
+  image_url?: string;
   options?: {
     id: string;
     text: string;
   }[];
   expected_answer: string;
+  answer?: string;
   marks: number;
   resources?: {
     video?: { title: string; url: string };
@@ -37,8 +39,10 @@ export interface Assessment {
   evaluated: boolean;
   questions: Question[];
   evaluation_results?: EvaluationResult[];
+  no_st_attempted: number;
+  no_st_passed: number;
+  class: string;
 }
-
 
 export interface User {
   id: string;

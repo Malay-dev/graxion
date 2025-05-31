@@ -23,8 +23,10 @@ interface LongAnswerQuestionProps {
   question: string;
   marks: number;
   expected_answer: string;
+  answer?: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
+  isEvaluated?: boolean;
   imageTypeAnswer?: boolean;
   onAnswerChange?: (answer: string) => void;
   onImageUpload?: (imageUrl: string) => void;
@@ -40,13 +42,15 @@ export function LongAnswerQuestion({
   question,
   marks,
   expected_answer,
+  answer,
   isSubmitted = false,
+  isEvaluated = false,
   imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
   resources,
 }: LongAnswerQuestionProps) {
-  const [answer, setAnswer] = useState<string>("");
+  const [currentAnswer, setCurrentAnswer] = useState<string>(answer || "");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [answerType, setAnswerType] = useState<"text" | "image">("text");
@@ -55,13 +59,13 @@ export function LongAnswerQuestion({
   console.log("LongAnswerQuestion : id", id);
   const isCorrect =
     isSubmitted &&
-    answer.length > 0 &&
-    answer.length >= expected_answer.length * 0.5;
-  const isIncorrect = isSubmitted && answer && !isCorrect;
+    currentAnswer.length > 0 &&
+    currentAnswer.length >= expected_answer.length * 0.5;
+  const isIncorrect = isSubmitted && isEvaluated && currentAnswer && !isCorrect;
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!isSubmitted) {
-      setAnswer(e.target.value);
+      setCurrentAnswer(e.target.value);
       if (onAnswerChange) {
         onAnswerChange(e.target.value);
       }
@@ -175,7 +179,7 @@ export function LongAnswerQuestion({
             />
           )}
 
-          {isSubmitted && (
+          {isSubmitted && isEvaluated && (
             <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950/20">
               <p className="text-sm font-medium text-green-800 dark:text-green-400">
                 Model Answer:
