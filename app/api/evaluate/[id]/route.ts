@@ -14,9 +14,9 @@ export async function POST(
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { evaluationResult } = body;
+  const { evaluation_results } = body;
 
-  if (!id || !evaluationResult) {
+  if (!id || !evaluation_results) {
     return NextResponse.json(
       { error: "Missing id or answers" },
       { status: 400 }
@@ -24,8 +24,18 @@ export async function POST(
   }
 
   try {
-    await updateEvaluationResults(id, evaluationResult);
-    return NextResponse.json({ success: true }, { status: 200 });
+    const updated = await updateEvaluationResults(id, evaluation_results);
+    if (!updated) {
+      return NextResponse.json({ error: "Update failed" }, { status: 500 });
+    }
+    return NextResponse.json(
+      {
+        success: true,
+        evaluated: updated.evaluated,
+        evaluation_results: updated.evaluation_results,
+      },
+      { status: 200 }
+    );
   } catch (error: unknown) {
     console.error("Error submitting assessment answers:", error);
     return NextResponse.json(

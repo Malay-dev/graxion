@@ -61,5 +61,7 @@ export async function updateEvaluationResults(
     evaluated: true,
   });
 
-  return true;
+  // Fetch and return the updated assessment data
+  const updatedSnap = await getDoc(assessmentRef);
+  return updatedSnap.data();
 }

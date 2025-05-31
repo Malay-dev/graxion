@@ -217,13 +217,56 @@ const Assessment = () => {
       description: "Your progress has been saved successfully.",
     });
   };
+  const getEvaluationResults = async () => {
+    if (!assessment_data) return;
+    // Build the request body as required by the API
+    const items = assessment_data.questions.map((q) => ({
+      question_id: q.id,
+      question: q.text,
+      actual_answer: answers[q.id]?.text || "",
+      expected_answer: q.expected_answer,
+    }));
+    const response = await fetch("/api/eval-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items }),
+    });
+    const result = await response.json();
+    return result;
+  };
 
   const handleEvaluate = async () => {
     setEvaluationLoading(true);
+    const evalResults = await getEvaluationResults();
+
+    let mappedResults = [];
+    if (assessment_data && evalResults && Array.isArray(evalResults.details)) {
+      mappedResults = evalResults.details.map(
+        (item: {
+          question_id: string;
+          score: number;
+          correct: boolean;
+          feedback: string;
+        }) => {
+          return {
+            question_id: item.question_id,
+            marks: item.score,
+            is_correct: item.correct,
+            feedback: item.feedback,
+            analysis: "",
+          };
+        }
+      );
+    }
+
     const response = await fetch(`/api/evaluate/${params?.id}`, {
       method: "POST",
+      body: JSON.stringify({
+        evaluation_results: mappedResults,
+      }),
     });
     const result = await response.json();
+    console.log("Evaluation Result:", result);
     if (result.evaluated && result.evaluation_results) {
       let marks = 0;
       const correctnessMap: Record<string, boolean> = {};
