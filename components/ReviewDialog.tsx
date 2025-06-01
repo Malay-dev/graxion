@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ interface ReviewDialogProps {
   onOpenChange: (open: boolean) => void;
   question: string;
   resources?: {
-    video?: { title: string; url: string };
+    video?: { title: string; url?: string; status_endpoint?: string };
     ref_videos?: { title: string; url: string }[];
     ref_articles?: { title: string; url: string }[];
   };
@@ -33,6 +33,46 @@ export function ReviewDialog({
     { role: "user" | "assistant"; content: string }[]
   >([]);
   const [inputMessage, setInputMessage] = useState("");
+
+  const [videoUrl, setVideoUrl] = useState<string | null>(
+    resources?.video?.url || null
+  );
+  const [videoLoading, setVideoLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    let polling: NodeJS.Timeout;
+    if (
+      resources?.video &&
+      resources.video.status_endpoint &&
+      videoUrl === null
+    ) {
+      setVideoLoading(true);
+      setVideoUrl(null);
+      const poll = async () => {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_VIDEO_GEN_URL}/${resources.video!
+              .status_endpoint!}`
+          );
+          const data = await res.json();
+          console.log("Polling video status:", data);
+          if (data.resources.video.url) {
+            setVideoUrl(data.resources.video.url);
+            setVideoLoading(false);
+          } else {
+            polling = setTimeout(poll, 1500);
+          }
+        } catch {
+          polling = setTimeout(poll, 2000);
+        }
+      };
+      poll();
+      return () => clearTimeout(polling);
+    } else if (resources?.video?.url) {
+      setVideoUrl(resources.video.url);
+      setVideoLoading(false);
+    }
+  }, [resources?.video, videoLoading, videoUrl]);
 
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
@@ -71,29 +111,45 @@ export function ReviewDialog({
 
           <TabsContent value="resources" className="flex-1 overflow-auto">
             <div className="space-y-6">
-              {resources?.video &&
-                resources.ref_videos &&
+              {(!!resources?.video || videoLoading) &&
+                !!resources?.ref_videos &&
                 resources.ref_videos.length > 0 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-medium">Video Tutorials</h3>
 
                     {/* Featured Video */}
-                    {resources.video && (
-                      <div className="aspect-video bg-muted rounded-md overflow-hidden">
-                        <iframe
-                          width="100%"
-                          height="100%"
-                          src={resources.video.url}
-                          title={resources.video.title}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen></iframe>
-                      </div>
-                    )}
+                    <div className="aspect-video bg-muted rounded-md overflow-hidden flex items-center justify-center">
+                      {videoLoading ? (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="animate-pulse text-muted-foreground">
+                            Loading video...
+                          </span>
+                        </div>
+                      ) : videoUrl ? (
+                        videoUrl.match(/\.(mp4|webm|ogg)(\?.*)?$/i) ? (
+                          <video
+                            src={videoUrl}
+                            controls
+                            muted={false}
+                            style={{ width: "100%", height: "100%" }}
+                            title={resources?.video?.title}
+                          />
+                        ) : (
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            src={videoUrl}
+                            title={resources?.video?.title}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen></iframe>
+                        )
+                      ) : null}
+                    </div>
 
                     {/* Video List */}
                     <div className="space-y-2">
-                      {resources.ref_videos.slice(1).map((video, index) => (
+                      {resources?.ref_videos?.slice(1).map((video, index) => (
                         <a
                           key={index}
                           href={video.url}
