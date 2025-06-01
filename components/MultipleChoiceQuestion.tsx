@@ -50,12 +50,16 @@ export function MultipleChoiceQuestion({
   isSubmitted = false,
   isEvaluated = false,
   onAnswerChange,
-  resources,
 }: MultipleChoiceQuestionProps) {
   console.log(answer);
   const [selectedOption, setSelectedOption] = useState<string>(answer || "");
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [reviewResources, setReviewResources] = useState<{
+    video?: { title: string; url?: string; status_endpoint?: string };
+    ref_videos?: { title: string; url: string }[];
+    ref_articles?: { title: string; url: string }[];
+  } | null>(null);
   const isCorrect =
     isSubmitted && isEvaluated && selectedOption === expected_answer;
   const isIncorrect =
@@ -85,22 +89,22 @@ export function MultipleChoiceQuestion({
     console.log(data);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_FLASK_URL}/review/mcq`,
+        `${process.env.NEXT_PUBLIC_SERVER_VIDEO_GEN_URL}/review/mcq`,
         {
-          method: "POST", // Specify the HTTP method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const result = await response.json();
-      console.log("Response:", result);
+      setReviewResources(result.resources || null);
+      console.log("Review resources:", result.resources);
+      setReviewOpen(true);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -204,12 +208,12 @@ export function MultipleChoiceQuestion({
         )}
       </Card>
 
-      {resources && (
+      {reviewResources && (
         <ReviewDialog
           open={reviewOpen}
           onOpenChange={setReviewOpen}
           question={question}
-          resources={resources}
+          resources={reviewResources}
         />
       )}
     </>

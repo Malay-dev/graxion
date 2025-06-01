@@ -88,8 +88,8 @@ const authOptions: AuthOptions = {
           session.user.role = token?.role as string;
         }
       }
-      return session;
-    },
+      return session;
+    },
   },
 };
 

@@ -50,13 +50,17 @@ export function ShortAnswerQuestion({
   imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
-  resources,
 }: ShortAnswerQuestionProps) {
   const [currentAnswer, setCurrentAnswer] = useState<string>(answer || "");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [answerType, setAnswerType] = useState<"text" | "image">("text");
+  const [reviewResources, setReviewResources] = useState<{
+    video?: { title: string; url?: string; status_endpoint?: string };
+    ref_videos?: { title: string; url: string }[];
+    ref_articles?: { title: string; url: string }[];
+  } | null>(null);
   console.log("ShortAnswerQuestion : id", id);
   console.log(answer);
   const isCorrect =
@@ -103,27 +107,26 @@ export function ShortAnswerQuestion({
     const data = {
       question: question,
       expected_answer: expected_answer,
-      answer: answer,
+      selected_option: answer,
     };
-    console.log(data);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_FLASK_URL}/review/mcq`,
+        `${process.env.NEXT_PUBLIC_SERVER_VIDEO_GEN_URL}/review/mcq`,
         {
-          method: "POST", // Specify the HTTP method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const result = await response.json();
-      console.log("Response:", result);
+      setReviewResources(result.resources || null);
+      console.log("Review resources:", result.resources);
+      setReviewOpen(true);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -256,12 +259,12 @@ export function ShortAnswerQuestion({
         </CardFooter>
       </Card>
 
-      {resources && (
+      {reviewResources && (
         <ReviewDialog
           open={reviewOpen}
           onOpenChange={setReviewOpen}
           question={question}
-          resources={resources}
+          resources={reviewResources}
         />
       )}
     </>
