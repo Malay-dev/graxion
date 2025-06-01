@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,6 +41,7 @@ export default function AssessmentFormPopup({
     submitted: false,
     evaluated: false,
   });
+  const router = useRouter();
 
   const handleStage1Submit = async (data: Partial<Assessment>) => {
     const updatedData = { ...assessmentData, ...data };
@@ -139,6 +141,7 @@ export default function AssessmentFormPopup({
         submitted: false,
         evaluated: false,
       });
+      router.refresh();
     } catch (error) {
       console.error("Error submitting assessment:", error);
       alert("Failed to submit assessment. Please try again.");
