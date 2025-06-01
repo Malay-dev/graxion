@@ -27,6 +27,7 @@ interface MultipleChoiceQuestionProps {
   marks: number;
   expected_answer: string;
   answer?: string;
+  feedback?: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
   isEvaluated?: boolean;
@@ -44,6 +45,7 @@ export function MultipleChoiceQuestion({
   options,
   marks,
   expected_answer,
+  feedback = "",
   answer,
   isSubmitted = false,
   isEvaluated = false,
@@ -166,7 +168,18 @@ export function MultipleChoiceQuestion({
               </div>
             ))}
           </RadioGroup>
+          {isSubmitted && isEvaluated && feedback !== "" && (
+            <div className="mt-4 rounded-md border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-900 dark:bg-yellow-950/20">
+              <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">
+                Feedback
+              </p>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                {feedback}
+              </p>
+            </div>
+          )}
         </CardContent>
+
         {isIncorrect && (
           <CardFooter className="flex justify-end">
             <Button

@@ -346,8 +346,8 @@ const Assessment = () => {
                               {index + 1}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {isAnswered ? (
-                                isSubmitted ? (
+                              {isAnswered || isSubmitted ? (
+                                isSubmitted && isEvaluated ? (
                                   isCorrect ? (
                                     <span className="flex items-center text-green-600">
                                       <CheckCircle className="h-4 w-4 mr-1" />
@@ -382,6 +382,11 @@ const Assessment = () => {
                               marks={question.marks}
                               expected_answer={question.expected_answer}
                               answer={question?.answer}
+                              feedback={
+                                assessment_data.evaluation_results?.find(
+                                  (result) => result.question_id === question.id
+                                )?.feedback
+                              }
                               isSubmitted={isSubmitted}
                               isEvaluated={isEvaluated}
                               showCorrectAnswer={isSubmitted && isEvaluated}
@@ -399,6 +404,11 @@ const Assessment = () => {
                               marks={question.marks}
                               expected_answer={question.expected_answer}
                               answer={question?.answer}
+                              feedback={
+                                assessment_data.evaluation_results?.find(
+                                  (result) => result.question_id === question.id
+                                )?.feedback
+                              }
                               isSubmitted={isSubmitted}
                               isEvaluated={isEvaluated}
                               showCorrectAnswer={isSubmitted && isEvaluated}
@@ -419,6 +429,11 @@ const Assessment = () => {
                               question={question.text}
                               marks={question.marks}
                               expected_answer={question.expected_answer}
+                              feedback={
+                                assessment_data.evaluation_results?.find(
+                                  (result) => result.question_id === question.id
+                                )?.feedback
+                              }
                               answer={question?.answer}
                               isSubmitted={isSubmitted}
                               isEvaluated={isEvaluated}
