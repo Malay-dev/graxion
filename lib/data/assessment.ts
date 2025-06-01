@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { collection, doc, setDoc, getDocs, getDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, getDoc, deleteDoc } from "firebase/firestore";
 
 import { Assessment } from "@/types";
 
@@ -66,5 +66,16 @@ export const updateAssessment = async (
   } catch (error) {
     console.error("Error updating assessment:", error);
     throw error;
+  }
+};
+
+export const deleteAssessment = async (id: string): Promise<boolean> => {
+  try {
+    const docRef = doc(db, "assessments", id);
+    await deleteDoc(docRef);
+    return true;
+  } catch (error) {
+    console.error("Error deleting assessment:", error);
+    return false;
   }
 };
