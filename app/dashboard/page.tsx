@@ -58,6 +58,9 @@ const Dashboard = () => {
                     passing_score={assessment.passing_score}
                     subject={assessment.subject}
                     class={assessment.class}
+                    submitted ={false}
+                    evaluated = {false}
+                    questions = {[]}
                   />
                 ))}
             </div>
