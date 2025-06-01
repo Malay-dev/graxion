@@ -30,7 +30,8 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import type { AssessmentData } from "./AssessmentForm";
+// import type { AssessmentData } from "./AssessmentForm";
+import {Assessment} from "@/types";
 
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }),
@@ -52,8 +53,8 @@ const formSchema = z.object({
 });
 
 interface AssessmentDetailsFormProps {
-  initialData: AssessmentData;
-  onSubmit: (data: Partial<AssessmentData>) => void;
+  initialData: Assessment;
+  onSubmit: (data: Partial<Assessment>) => void;
 }
 
 export function AssessmentDetailsForm({

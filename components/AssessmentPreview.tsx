@@ -9,12 +9,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { format } from "date-fns";
-import type { AssessmentData } from "./AssessmentForm";
+import { Assessment } from "@/types";
 import { ChevronLeft, Save } from "lucide-react";
 import Image from "next/image";
 
 interface AssessmentPreviewProps {
-  assessmentData: AssessmentData;
+  assessmentData: Assessment;
   onSubmit: () => void;
   onClose: () => void;
   onBack: () => void;
@@ -147,19 +147,19 @@ export function AssessmentPreview({
                   <p className="mt-2">{question.text}</p>
 
                   {question.type === "MCQ" &&
-                    question.choices &&
-                    question.choices.length > 0 && (
+                    question.options &&
+                    question.options.length > 0 && (
                       <div className="mt-4 space-y-2">
                         <h4 className="text-sm font-medium">Answer Choices:</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {question.choices.map((choice, i) => (
+                          {question.options.map((choice, i) => (
                             <div
                               key={i}
                               className="flex items-center gap-2 text-sm">
                               <div className="h-4 w-4 rounded-full border flex items-center justify-center">
                                 <div className="h-2 w-2 rounded-full bg-muted"></div>
                               </div>
-                              {choice}
+                              {choice.text}
                             </div>
                           ))}
                         </div>

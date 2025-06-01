@@ -7,9 +7,10 @@ import {
 
 export async function GET(
   _: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const question = await getQuestionById(params.id);
+  const { id } = await context.params;
+  const question = await getQuestionById(id);
   return question
     ? NextResponse.json(question)
     : NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -17,11 +18,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const data = await request.json();
-    await updateQuestion(params.id, data);
+    const { id } = await context.params;
+    await updateQuestion(id, data);
     return NextResponse.json({ message: "Updated" });
   } catch (err) {
     console.error(err);
@@ -31,10 +33,11 @@ export async function PUT(
 
 export async function DELETE(
   _: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await deleteQuestion(params.id);
+    const { id } = await context.params;
+    await deleteQuestion(id);
     return NextResponse.json({ message: "Deleted" });
   } catch (err) {
     console.error(err);
