@@ -24,6 +24,7 @@ import {
   CheckCircle,
   WarningCircle,
 } from "@phosphor-icons/react/dist/ssr";
+import Loading from "@/components/Loading";
 
 type AssessmentData = {
   id: string;
@@ -296,10 +297,10 @@ const Assessment = () => {
   ).length;
 
   if (!assessment_data) {
-    return <div>Loading...</div>; // Show a loading state while data is being fetched
+    return <Loading />;
   }
   if (evaluationLoading) {
-    return <div>Loading...</div>; // Show a loading state while data is being fetched
+    return <Loading />;
   }
   return (
     <Tabs defaultValue="complete" className="flex-1 px-6">
