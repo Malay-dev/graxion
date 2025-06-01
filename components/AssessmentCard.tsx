@@ -42,8 +42,6 @@ export default function AssessmentCard({
 }: Assessment) {
    const router = useRouter();
   const [openDialog, setOpenDialog] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<null | string>(null);
-  const [isError, setIsError] = useState(false);
 
    const handleDelete = async () => {
       try {
@@ -54,13 +52,9 @@ export default function AssessmentCard({
         if (!res.ok) throw new Error("Network response was not ok");
 
         setOpenDialog(false);
-        setIsError(false);
-        setStatusMessage("Assessment deleted successfully.");
         router.push("/dashboard");
       } catch (error) {
         console.error("Failed to delete:", error);
-        setIsError(true);
-        setStatusMessage("Failed to delete the assessment.");
       }
     };
 
