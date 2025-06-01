@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,7 +38,10 @@ export default function AssessmentFormPopup({
     subject: "",
     class: "",
     questions: [],
+    submitted: false,
+    evaluated: false,
   });
+  const router = useRouter();
 
   const handleStage1Submit = async (data: Partial<Assessment>) => {
     const updatedData = { ...assessmentData, ...data };
@@ -56,7 +60,14 @@ export default function AssessmentFormPopup({
       if (!response.ok) {
         throw new Error("Failed to save assessment details");
       }
-
+      const result = await response.json();
+      console.log("Assessment created with ID:", result.id);
+      if (result.id) {
+        setAssessmentData((prev) => ({
+          ...prev,
+          id: result.id,
+        }));
+      }
       setCurrentStage(2);
     } catch (error) {
       console.error("Error saving assessment details:", error);
@@ -70,7 +81,7 @@ export default function AssessmentFormPopup({
     console.log("Stage 2 Data:", updatedData);
 
     try {
-      const response = await fetch("/api/assessment/questions", {
+      const response = await fetch("/api/questions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +92,13 @@ export default function AssessmentFormPopup({
       if (!response.ok) {
         throw new Error("Failed to save questions");
       }
-
+      const result = await response.json();
+      if (result.questions) {
+        setAssessmentData((prev) => ({
+          ...prev,
+          questions: result.questions,
+        }));
+      }
       setCurrentStage(3);
     } catch (error) {
       console.error("Error saving questions:", error);
@@ -93,8 +110,8 @@ export default function AssessmentFormPopup({
     console.log("Final Assessment Data:", assessmentData);
 
     try {
-      const response = await fetch("/api/assessment/submit", {
-        method: "POST",
+      const response = await fetch(`/api/assessments/${assessmentData.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -109,6 +126,7 @@ export default function AssessmentFormPopup({
       setCurrentStage(1);
       // Reset form data if needed
       setAssessmentData({
+        id: "",
         title: "",
         description: "",
         start_date: "",
@@ -120,7 +138,10 @@ export default function AssessmentFormPopup({
         subject: "",
         class: "",
         questions: [],
+        submitted: false,
+        evaluated: false,
       });
+      router.refresh();
     } catch (error) {
       console.error("Error submitting assessment:", error);
       alert("Failed to submit assessment. Please try again.");

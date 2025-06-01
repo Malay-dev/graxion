@@ -40,7 +40,7 @@ const CreateAssesmentCard = ({ subject }: { subject: string }) => {
   return (
     <AssessmentFormPopup>
       <Card
-        className="hover:border-white cursor-pointer"
+        className="hover:border-white cursor-pointer min-h-[500px]"
         onClick={() => {
           handleOnClick(subject);
         }}>

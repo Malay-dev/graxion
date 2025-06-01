@@ -15,7 +15,17 @@ import {
   Microscope,
 } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
-
+import { Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Assessment } from "@/types";
 
 export default function AssessmentCard({
@@ -30,6 +40,30 @@ export default function AssessmentCard({
   passing_score,
   subject,
 }: Assessment) {
+   const router = useRouter();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<null | string>(null);
+  const [isError, setIsError] = useState(false);
+
+   const handleDelete = async () => {
+      try {
+        const res = await fetch(`/api/assessments/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!res.ok) throw new Error("Network response was not ok");
+
+        setOpenDialog(false);
+        setIsError(false);
+        setStatusMessage("Assessment deleted successfully.");
+        router.push("/dashboard");
+      } catch (error) {
+        console.error("Failed to delete:", error);
+        setIsError(true);
+        setStatusMessage("Failed to delete the assessment.");
+      }
+    };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -58,26 +92,34 @@ export default function AssessmentCard({
 
   return (
     <Link href={`/assessment/${id}`}>
-      <Card className="overflow-hidden border shadow-lg cursor-pointer hover:border-white">
-        <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-4 space-y-0">
+      <Card className="overflow-hidden border shadow-lg cursor-pointer hover:border-white min-h-[500px]">
+        <CardHeader className="...">
           <div className="flex gap-2 justify-between items-start">
             <div className="min-h-20">
-              <CardTitle className="text-xl font-bold">{title}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">ID: {id}</p>
+              <CardTitle className="...">{title}</CardTitle>
+              <p className="...">ID: {id}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2">
               <Badge
-                variant={
-                  new Date(end_date) > new Date() ? "default" : "secondary"
-                }>
+                variant={new Date(end_date) > new Date() ? "default" : "secondary"}>
                 {new Date(end_date) > new Date() ? "Active" : "Completed"}
               </Badge>
               {renderIcon()}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpenDialog(true);
+                }}
+                className="hover:text-red-600 transition-colors"
+                title="Delete Assessment"
+              >
+                <Trash2Icon className="h-4 w-4 text-muted-foreground" />
+              </button>
             </div>
           </div>
         </CardHeader>
         <CardContent className="pt-2">
-          <p className="text-sm text-muted-foreground min-h-10 mb-6">
+          <p className="text-sm text-muted-foreground min-h-10 mb-6 line-clamp-3">
             {description}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -141,6 +183,27 @@ export default function AssessmentCard({
           </div>
         </CardFooter>
       </Card>
+
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Are you sure you want to delete this assessment? This action cannot be undone.
+          </p>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setOpenDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </Link>
+    
   );
 }

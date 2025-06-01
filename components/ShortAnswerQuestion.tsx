@@ -23,8 +23,11 @@ interface ShortAnswerQuestionProps {
   question: string;
   marks: number;
   expected_answer: string;
+  answer?: string;
+  feedback?: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
+  isEvaluated?: boolean;
   imageTypeAnswer?: boolean;
   onAnswerChange?: (answer: string) => void;
   onImageUpload?: (imageUrl: string) => void;
@@ -40,27 +43,35 @@ export function ShortAnswerQuestion({
   question,
   marks,
   expected_answer,
+  feedback = "",
+  answer,
   isSubmitted = false,
-  imageTypeAnswer = false,
+  isEvaluated = false,
+  imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
-  resources,
 }: ShortAnswerQuestionProps) {
-  const [answer, setAnswer] = useState<string>("");
+  const [currentAnswer, setCurrentAnswer] = useState<string>(answer || "");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [answerType, setAnswerType] = useState<"text" | "image">("text");
+  const [reviewResources, setReviewResources] = useState<{
+    video?: { title: string; url?: string; status_endpoint?: string };
+    ref_videos?: { title: string; url: string }[];
+    ref_articles?: { title: string; url: string }[];
+  } | null>(null);
   console.log("ShortAnswerQuestion : id", id);
-
+  console.log(answer);
   const isCorrect =
     isSubmitted &&
-    answer.toLowerCase().trim() === expected_answer.toLowerCase().trim();
-  const isIncorrect = isSubmitted && answer && !isCorrect;
+    isEvaluated &&
+    currentAnswer.toLowerCase().trim() === expected_answer.toLowerCase().trim();
+  const isIncorrect = isSubmitted && isEvaluated && currentAnswer && !isCorrect;
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!isSubmitted) {
-      setAnswer(e.target.value);
+      setCurrentAnswer(e.target.value);
       if (onAnswerChange) {
         onAnswerChange(e.target.value);
       }
@@ -96,27 +107,26 @@ export function ShortAnswerQuestion({
     const data = {
       question: question,
       expected_answer: expected_answer,
-      answer: answer,
+      selected_option: answer,
     };
-    console.log(data);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_FLASK_URL}/review/mcq`,
+        `${process.env.NEXT_PUBLIC_SERVER_VIDEO_GEN_URL}/review/mcq`,
         {
-          method: "POST", // Specify the HTTP method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const result = await response.json();
-      console.log("Response:", result);
+      setReviewResources(result.resources || null);
+      console.log("Review resources:", result.resources);
+      setReviewOpen(true);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -164,7 +174,7 @@ export function ShortAnswerQuestion({
             </div>
           )}
 
-          {(answerType === "text" || !imageTypeAnswer) && (
+          {(!imageTypeAnswer || (imageTypeAnswer && answerType === "text")) && (
             <Textarea
               placeholder="Type your answer here..."
               value={answer}
@@ -174,13 +184,23 @@ export function ShortAnswerQuestion({
             />
           )}
 
-          {isSubmitted && (
+          {isSubmitted && isEvaluated && (
             <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950/20">
               <p className="text-sm font-medium text-green-800 dark:text-green-400">
                 Correct Answer:
               </p>
               <p className="text-sm text-green-700 dark:text-green-300">
                 {expected_answer}
+              </p>
+            </div>
+          )}
+          {isSubmitted && isEvaluated && feedback !== "" && (
+            <div className="mt-4 rounded-md border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-900 dark:bg-yellow-950/20">
+              <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">
+                Feedback
+              </p>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                {feedback}
               </p>
             </div>
           )}
@@ -193,6 +213,8 @@ export function ShortAnswerQuestion({
                   src={imageUrl || "/placeholder.svg"}
                   alt="Uploaded answer"
                   className="max-h-60 w-full object-contain"
+                  width={500}
+                  height={300}
                 />
               </div>
             </div>
@@ -237,12 +259,12 @@ export function ShortAnswerQuestion({
         </CardFooter>
       </Card>
 
-      {resources && (
+      {reviewResources && (
         <ReviewDialog
           open={reviewOpen}
           onOpenChange={setReviewOpen}
           question={question}
-          resources={resources}
+          resources={reviewResources}
         />
       )}
     </>

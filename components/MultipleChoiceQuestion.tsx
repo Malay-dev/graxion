@@ -26,8 +26,11 @@ interface MultipleChoiceQuestionProps {
   options: Option[];
   marks: number;
   expected_answer: string;
+  answer?: string;
+  feedback?: string;
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
+  isEvaluated?: boolean;
   onAnswerChange?: (answerId: string) => void;
   resources?: {
     video?: { title: string; url: string };
@@ -42,16 +45,28 @@ export function MultipleChoiceQuestion({
   options,
   marks,
   expected_answer,
+  feedback = "",
+  answer,
   isSubmitted = false,
+  isEvaluated = false,
   onAnswerChange,
-  resources,
 }: MultipleChoiceQuestionProps) {
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  console.log(answer);
+  const [selectedOption, setSelectedOption] = useState<string>(answer || "");
   const [reviewOpen, setReviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isCorrect = isSubmitted && selectedOption === expected_answer;
+  const [reviewResources, setReviewResources] = useState<{
+    video?: { title: string; url?: string; status_endpoint?: string };
+    ref_videos?: { title: string; url: string }[];
+    ref_articles?: { title: string; url: string }[];
+  } | null>(null);
+  const isCorrect =
+    isSubmitted && isEvaluated && selectedOption === expected_answer;
   const isIncorrect =
-    isSubmitted && selectedOption && selectedOption !== expected_answer;
+    isSubmitted &&
+    isEvaluated &&
+    selectedOption &&
+    selectedOption !== expected_answer;
 
   const handleOptionChange = (value: string) => {
     if (!isSubmitted) {
@@ -74,22 +89,22 @@ export function MultipleChoiceQuestion({
     console.log(data);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_FLASK_URL}/review/mcq`,
+        `${process.env.NEXT_PUBLIC_SERVER_VIDEO_GEN_URL}/review/mcq`,
         {
-          method: "POST", // Specify the HTTP method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         }
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const result = await response.json();
-      console.log("Response:", result);
+      setReviewResources(result.resources || null);
+      console.log("Review resources:", result.resources);
+      setReviewOpen(true);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -125,9 +140,10 @@ export function MultipleChoiceQuestion({
               <div
                 key={option.id}
                 className={`flex items-center space-x-2 rounded-md border p-3 ${
-                  isSubmitted && expected_answer === option.id
+                  isSubmitted && isEvaluated && expected_answer === option.id
                     ? "border-green-500 bg-green-50 dark:bg-green-950/20"
                     : isSubmitted &&
+                      isEvaluated &&
                       selectedOption === option.id &&
                       selectedOption !== expected_answer
                     ? "border-red-500 bg-red-50 dark:bg-red-950/20"
@@ -142,10 +158,13 @@ export function MultipleChoiceQuestion({
                   className="flex-grow cursor-pointer">
                   {option.text}
                 </Label>
-                {isSubmitted && expected_answer === option.id && (
-                  <Check className="h-4 w-4 text-green-500" />
-                )}
                 {isSubmitted &&
+                  isEvaluated &&
+                  expected_answer === option.id && (
+                    <Check className="h-4 w-4 text-green-500" />
+                  )}
+                {isSubmitted &&
+                  isEvaluated &&
                   selectedOption === option.id &&
                   selectedOption !== expected_answer && (
                     <X className="h-4 w-4 text-red-500" />
@@ -153,7 +172,18 @@ export function MultipleChoiceQuestion({
               </div>
             ))}
           </RadioGroup>
+          {isSubmitted && isEvaluated && feedback !== "" && (
+            <div className="mt-4 rounded-md border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-900 dark:bg-yellow-950/20">
+              <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">
+                Feedback
+              </p>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                {feedback}
+              </p>
+            </div>
+          )}
         </CardContent>
+
         {isIncorrect && (
           <CardFooter className="flex justify-end">
             <Button
@@ -178,12 +208,12 @@ export function MultipleChoiceQuestion({
         )}
       </Card>
 
-      {resources && (
+      {reviewResources && (
         <ReviewDialog
           open={reviewOpen}
           onOpenChange={setReviewOpen}
           question={question}
-          resources={resources}
+          resources={reviewResources}
         />
       )}
     </>

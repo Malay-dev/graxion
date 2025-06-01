@@ -1,5 +1,5 @@
-import { db } from "./firebase";
-import { collection, doc, setDoc, getDocs, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { collection, doc, setDoc, getDocs, getDoc, deleteDoc } from "firebase/firestore";
 
 import { Assessment } from "@/types";
 
@@ -50,5 +50,32 @@ export const getAssessmentById = async (
   } catch (error) {
     console.error("Error fetching assessment by ID:", error);
     throw error;
+  }
+};
+
+export const updateAssessment = async (
+  id: string,
+  data: Partial<Omit<Assessment, "id">>
+): Promise<void> => {
+  try {
+    if (!id || typeof id !== "string") {
+      throw new Error("Invalid assessment id provided to updateAssessment");
+    }
+    const docRef = doc(db, "assessments", id);
+    await setDoc(docRef, data, { merge: true });
+  } catch (error) {
+    console.error("Error updating assessment:", error);
+    throw error;
+  }
+};
+
+export const deleteAssessment = async (id: string): Promise<boolean> => {
+  try {
+    const docRef = doc(db, "assessments", id);
+    await deleteDoc(docRef);
+    return true;
+  } catch (error) {
+    console.error("Error deleting assessment:", error);
+    return false;
   }
 };

@@ -36,6 +36,7 @@ export function AssessmentPreview({
       return dateString;
     }
   };
+  
 
   return (
     <div className="space-y-8">
@@ -204,7 +205,16 @@ export function AssessmentPreview({
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
-          <Button onClick={onSubmit}>Create Assessment</Button>
+          
+          <Button
+            onClick={async () => {
+              await onSubmit();
+              window.location.reload();
+            }}
+          >
+            Create Assessment
+          </Button>
+
         </div>
       </div>
     </div>
