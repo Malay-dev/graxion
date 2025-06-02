@@ -45,7 +45,7 @@ export async function submitAssessmentAnswers(
 
 export async function updateEvaluationResults(
   assessmentId: string,
-  results: EvaluationResult
+  results: EvaluationResult[]
 ) {
   const assessmentRef = doc(db, "assessments", assessmentId);
   const assessmentSnap = await getDoc(assessmentRef);
@@ -54,7 +54,7 @@ export async function updateEvaluationResults(
 
   const data = assessmentSnap.data();
   if (!data.questions) throw new Error("No questions found in assessment");
-
+  console.log(results);
   // Update evaluation results
   await updateDoc(assessmentRef, {
     evaluation_results: results,
