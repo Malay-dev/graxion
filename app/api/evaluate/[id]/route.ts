@@ -28,6 +28,7 @@ export async function POST(
     if (!updated) {
       return NextResponse.json({ error: "Update failed" }, { status: 500 });
     }
+    console.log(updated);
     return NextResponse.json(
       {
         success: true,
