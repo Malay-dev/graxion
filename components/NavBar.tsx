@@ -1,24 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import DashNav from "./DashNav";
 import { LandingNavbar } from "./landing/sections/LandingNavbar";
 const NavBar = () => {
-  const [pathname, setPathname] = useState("");
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const pathParts = window.location.pathname.split("/");
-      setPathname(pathParts[1]);
-      console.log(pathParts);
-    }
-  }, []);
-
-  return (
-    <>
-      {pathname === "dashboard" && <DashNav />}
-      {pathname == "" && <LandingNavbar />}
-    </>
-  );
+  const pathname = usePathname();
+  if (pathname === "/") {
+    return <LandingNavbar />;
+  }
+  if (pathname.startsWith("/dashboard")) {
+    return <DashNav />;
+  }
+  return null;
 };
 
 export default NavBar;
