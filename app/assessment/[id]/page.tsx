@@ -284,6 +284,20 @@ const Assessment = () => {
 
       setEarnedMarks(marks);
       setCorrectness(correctnessMap);
+
+      setAssessment_data((prev) =>
+        prev
+          ? {
+              ...prev,
+              evaluated: result.evaluated,
+              evaluation_results: result.evaluation_results,
+              questions: prev.questions.map((q) => ({
+                ...q,
+                answer: answers[q.id]?.text || "",
+              })),
+            }
+          : prev
+      );
     }
     setIsEvaluated(true);
     setEvaluationLoading(false);
