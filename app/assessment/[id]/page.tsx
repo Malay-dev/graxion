@@ -25,6 +25,7 @@ import {
   WarningCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import Loading from "@/components/Loading";
+import { saveSwotAnalysis } from "@/lib/data/analysis";
 
 type AssessmentData = {
   id: string;
@@ -76,6 +77,7 @@ const Assessment = () => {
   >({});
   const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
   const [correctness, setCorrectness] = useState<Record<string, boolean>>({});
+  const [swotData, setSwotData] = useState<object | null>(null);
 
   const [assessment_data, setAssessment_data] = useState<AssessmentData>();
   const params = useParams();
@@ -105,7 +107,6 @@ const Assessment = () => {
             correctnessMap[item.question_id] = item.is_correct;
           }
         );
-
         setEarnedMarks(marks);
         setCorrectness(correctnessMap);
       }
@@ -239,6 +240,32 @@ const Assessment = () => {
   const handleEvaluate = async () => {
     setEvaluationLoading(true);
     const evalResults = await getEvaluationResults();
+
+    // Call swot-proxy with the same request body as eval-proxy
+    if (assessment_data) {
+      const items = assessment_data.questions.map((q) => ({
+        question_id: q.id,
+        question: q.text,
+        actual_answer: answers[q.id]?.text || "",
+        expected_answer: q.expected_answer,
+      }));
+      try {
+        if (!params?.id) {
+          console.error("handleEvaluate: params.id is undefined");
+        }
+        const swotRes = await fetch("/api/swot-proxy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items }),
+        });
+        const swotJson = await swotRes.json();
+        console.log("SWOT Analysis Response:", swotJson);
+        setSwotData(swotJson);
+        await saveSwotAnalysis(assessment_data.id, swotJson);
+      } catch (err) {
+        console.error("SWOT analysis error", err);
+      }
+    }
 
     let mappedResults = [];
     if (assessment_data && evalResults && Array.isArray(evalResults.details)) {
@@ -498,6 +525,16 @@ const Assessment = () => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+
+                {/* SWOT Analysis Section */}
+                {swotData && (
+                  <div className="mt-4 p-4 border rounded bg-muted">
+                    <h3 className="font-bold mb-2">SWOT Analysis</h3>
+                    <pre className="text-xs whitespace-pre-wrap">
+                      {JSON.stringify(swotData, null, 2)}
+                    </pre>
+                  </div>
+                )}
               </div>
             </TabsContent>
           </div>
