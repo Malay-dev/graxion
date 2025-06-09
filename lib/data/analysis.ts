@@ -16,15 +16,13 @@ export async function saveSwotAnalysis(
   assessmentId: string,
   swot: SwotAnalysis
 ) {
-  if (!assessmentId) {
-    console.error("saveSwotAnalysis: assessmentId is undefined");
-    throw new Error("Assessment ID is required");
-  }
+  if (!assessmentId) throw new Error("Assessment ID is required");
   try {
-    // Use assessmentId as the document ID
-    const docRef = doc(swotCollectionRef, assessmentId);
+    const docRef = doc(db, "swotanalysis", assessmentId);
+    console.log(swot);
     await setDoc(docRef, {
-      swot,
+      ...swot,
+      assessmentId, // Optional, helps for reference
       updatedAt: new Date().toISOString(),
     });
   } catch (err) {
@@ -33,13 +31,12 @@ export async function saveSwotAnalysis(
   }
 }
 
+
 export async function getSwotAnalysis(assessmentId: string) {
-  if (!assessmentId) {
-    console.error("getSwotAnalysis: assessmentId is undefined");
-    throw new Error("Assessment ID is required");
-  }
+  if (!assessmentId) throw new Error("Assessment ID is required");
   try {
-    const swotDoc = await getDoc(doc(db, "swot", assessmentId));
+    const docRef = doc(db, "swotanalysis", assessmentId);
+    const swotDoc = await getDoc(docRef);
     if (swotDoc.exists()) {
       return { id: swotDoc.id, ...swotDoc.data() };
     }
@@ -49,3 +46,4 @@ export async function getSwotAnalysis(assessmentId: string) {
     throw err;
   }
 }
+
