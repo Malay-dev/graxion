@@ -15,14 +15,14 @@ const swotCollectionRef = collection(db, "swotanalysis");
 export async function saveSwotAnalysis(
   assessmentId: string,
   swot: SwotAnalysis
-) {
+): Promise<void> {
   if (!assessmentId) throw new Error("Assessment ID is required");
+
+  const docRef = doc(swotCollectionRef, assessmentId);
   try {
-    const docRef = doc(db, "swotanalysis", assessmentId);
-    console.log(swot);
     await setDoc(docRef, {
       ...swot,
-      assessmentId, // Optional, helps for reference
+      assessmentId,
       updatedAt: new Date().toISOString(),
     });
   } catch (err) {
@@ -31,14 +31,20 @@ export async function saveSwotAnalysis(
   }
 }
 
+export interface SwotAnalysisWithId extends SwotAnalysis {
+  id: string;
+}
 
-export async function getSwotAnalysis(assessmentId: string) {
+export async function getSwotAnalysis(
+  assessmentId: string
+): Promise<SwotAnalysisWithId | null> {
   if (!assessmentId) throw new Error("Assessment ID is required");
+
+  const docRef = doc(swotCollectionRef, assessmentId);
   try {
-    const docRef = doc(db, "swotanalysis", assessmentId);
     const swotDoc = await getDoc(docRef);
     if (swotDoc.exists()) {
-      return { id: swotDoc.id, ...swotDoc.data() };
+      return { id: swotDoc.id, ...(swotDoc.data() as SwotAnalysis) };
     }
     return null;
   } catch (err) {
@@ -46,4 +52,3 @@ export async function getSwotAnalysis(assessmentId: string) {
     throw err;
   }
 }
-
