@@ -10,6 +10,7 @@ export interface SwotAnalysis {
   analysis?: string;
 }
 
+
 const swotCollectionRef = collection(db, "swotanalysis");
 
 export async function saveSwotAnalysis(
