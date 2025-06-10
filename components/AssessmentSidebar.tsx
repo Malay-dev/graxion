@@ -78,7 +78,7 @@ export function AssessmentSidebar({
         <CardTitle className="text-xl">{title}</CardTitle>
         <p className="text-sm text-muted-foreground mt-1">ID: {id}</p>
         <div className="space-y-2 text-sm text-muted-foreground">
-          <p className="text-sm text-muted-foreground min-h-10 mb-6">
+          <p className="text-sm text-muted-foreground min-h-10 mb-6 hidden">
             {description}
           </p>
           <div className="flex items-center">

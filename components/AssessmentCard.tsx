@@ -40,23 +40,23 @@ export default function AssessmentCard({
   passing_score,
   subject,
 }: Assessment) {
-   const router = useRouter();
+  const router = useRouter();
   const [openDialog, setOpenDialog] = useState(false);
 
-   const handleDelete = async () => {
-      try {
-        const res = await fetch(`/api/assessments/${id}`, {
-          method: "DELETE",
-        });
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/assessments/${id}`, {
+        method: "DELETE",
+      });
 
-        if (!res.ok) throw new Error("Network response was not ok");
+      if (!res.ok) throw new Error("Network response was not ok");
 
-        setOpenDialog(false);
-        router.push("/dashboard");
-      } catch (error) {
-        console.error("Failed to delete:", error);
-      }
-    };
+      setOpenDialog(false);
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Failed to delete:", error);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -87,33 +87,27 @@ export default function AssessmentCard({
   return (
     <Link href={`/assessment/${id}`}>
       <Card className="overflow-hidden border shadow-lg cursor-pointer hover:border-white min-h-[500px]">
-        <CardHeader className="...">
+        <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-4">
           <div className="flex gap-2 justify-between items-start">
-            <div className="min-h-20">
-              <CardTitle className="...">{title}</CardTitle>
-              <p className="...">ID: {id}</p>
+            <div>
+              <CardTitle className="text-xl font-bold text-nowrap text-ellipsis overflow-hidden max-w-[200px]">
+                {title}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">ID: {id}</p>
             </div>
-            <div className="flex items-start gap-2">
+            <div className="flex items-center gap-2">
               <Badge
-                variant={new Date(end_date) > new Date() ? "default" : "secondary"}>
+                variant={
+                  new Date(end_date) > new Date() ? "default" : "secondary"
+                }>
                 {new Date(end_date) > new Date() ? "Active" : "Completed"}
               </Badge>
               {renderIcon()}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenDialog(true);
-                }}
-                className="hover:text-red-600 transition-colors"
-                title="Delete Assessment"
-              >
-                <Trash2Icon className="h-4 w-4 text-muted-foreground" />
-              </button>
             </div>
           </div>
         </CardHeader>
         <CardContent className="pt-2">
-          <p className="text-sm text-muted-foreground min-h-10 mb-6 line-clamp-3">
+          <p className="text-sm text-muted-foreground min-h-16 mb-6 line-clamp-3">
             {description}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -175,6 +169,15 @@ export default function AssessmentCard({
             <span className="text-muted-foreground">Max Score: </span>
             <span className="font-medium">{max_score}</span>
           </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setOpenDialog(true);
+            }}
+            className="hover:text-red-600 transition-colors"
+            title="Delete Assessment">
+            <Trash2Icon className="h-4 w-4 text-muted-foreground" />
+          </button>
         </CardFooter>
       </Card>
 
@@ -184,7 +187,8 @@ export default function AssessmentCard({
             <DialogTitle>Confirm Deletion</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Are you sure you want to delete this assessment? This action cannot be undone.
+            Are you sure you want to delete this assessment? This action cannot
+            be undone.
           </p>
           <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setOpenDialog(false)}>
@@ -196,8 +200,6 @@ export default function AssessmentCard({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </Link>
-    
   );
 }

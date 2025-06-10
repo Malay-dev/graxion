@@ -195,7 +195,7 @@ export function MultipleChoiceQuestion({
               {loading ? (
                 <>
                   <SpinnerGap className="mr-2 h-4 w-4 animate-spin" />
-                  Generate & Learn
+                  Working on it .........
                 </>
               ) : (
                 <>
