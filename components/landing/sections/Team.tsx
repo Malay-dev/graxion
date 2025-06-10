@@ -48,7 +48,7 @@ export const TeamSection = () => {
       imageUrl:
         "https://media.licdn.com/dms/image/v2/D5603AQEUduVsUyTGsA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1722496615992?e=1748476800&v=beta&t=6Npcfk3cLeJgaDNC03QZZnSx8lW--dGDsppHP-BfmB8",
       firstName: "Ashiq",
-      lastName: "Noor",
+      lastName: "Noor Sudheer",
       positions: ["Developer"],
       socialNetworks: [
         {
@@ -65,7 +65,7 @@ export const TeamSection = () => {
       imageUrl:
         "https://media.licdn.com/dms/image/v2/D5603AQHAJ5PbLpxayQ/profile-displayphoto-shrink_400_400/B56ZRzGD1wGsAo-/0/1737097756809?e=1748476800&v=beta&t=HINy3nfXSLV0bJaGfxW3KwRlA_lyqzS5Ao960RBGhWY",
       firstName: "Mathew",
-      lastName: "Thomas",
+      lastName: "Thomas Modisseril",
       positions: ["AI Engineer"],
       socialNetworks: [
         {
