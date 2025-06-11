@@ -49,7 +49,7 @@ Graxion is an intelligent platform designed to revolutionize how assessments are
 - **Backend + AI Services**: Node.js / Express (hosted on **Google Cloud Run**)  
 - **AI Integration**: Gemini LLMs for assessment generation and evaluation  
 - **Authentication**: Currently experimental (full system coming soon)  
-- **Database**: MongoDB / Firebase (as per deployment)  
+- **Database**: Firebase
 - **Resource API**: YouTube Data API + custom web scraping modules  
 
 ---
