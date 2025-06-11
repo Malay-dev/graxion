@@ -2,9 +2,25 @@
 
 import { AIAssessmentGeneratorForm } from "@/components/AIAssessmentGeneratorForm";
 
+interface AIAssessmentFormData {
+  title: string;
+  subject: string;
+  class: string;
+  start_date: Date;
+  end_date: Date;
+  question_type: "MCQ" | "Short Answer" | "Descriptive";
+  number_of_questions: number;
+  difficulty: "Easy" | "Medium" | "Hard";
+  max_score: number;
+  passing_score: number;
+  topics?: string;
+  instructions?: string;
+  description?: string;
+}
+
 export default function AIAssessmentPage() {
-  const handleGenerate = async (formData: any) => {
-    const res = await fetch("/api/generate-assessment", {
+  const handleGenerate = async (formData: AIAssessmentFormData) => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_EVAL_URL}/api/generate-qa`, {
       method: "POST",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
