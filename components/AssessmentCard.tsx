@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Assessment } from "@/types";
+import { useSession } from "next-auth/react";
 
 export default function AssessmentCard({
   id,
@@ -42,6 +43,8 @@ export default function AssessmentCard({
 }: Assessment) {
   const router = useRouter();
   const [openDialog, setOpenDialog] = useState(false);
+  const { data: session } = useSession();
+  const role = session?.user?.role;
 
   const handleDelete = async () => {
     try {
@@ -176,9 +179,11 @@ export default function AssessmentCard({
               e.preventDefault();
               setOpenDialog(true);
             }}
-            className="hover:text-red-600 transition-colors"
+            className="hover:text-red-600 transition-colors cursor-pointer"
             title="Delete Assessment">
-            <Trash2Icon className="h-4 w-4 text-muted-foreground" />
+            {role === "teacher" ? (
+              <Trash2Icon className="h-4 w-4 text-muted-foreground" />
+            ) : null}
           </button>
         </CardFooter>
       </Card>

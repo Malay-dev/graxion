@@ -31,6 +31,7 @@ interface MultipleChoiceQuestionProps {
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
   isEvaluated?: boolean;
+  isCorrect?: boolean;
   onAnswerChange?: (answerId: string) => void;
   resources?: {
     video?: { title: string; url: string };
@@ -49,6 +50,7 @@ export function MultipleChoiceQuestion({
   answer,
   isSubmitted = false,
   isEvaluated = false,
+  isCorrect = false,
   onAnswerChange,
 }: MultipleChoiceQuestionProps) {
   console.log(answer);
@@ -60,8 +62,7 @@ export function MultipleChoiceQuestion({
     ref_videos?: { title: string; url: string }[];
     ref_articles?: { title: string; url: string }[];
   } | null>(null);
-  const isCorrect =
-    isSubmitted && isEvaluated && selectedOption === expected_answer;
+  const isCorrected = isSubmitted && isEvaluated && isCorrect;
   const isIncorrect =
     isSubmitted &&
     isEvaluated &&
@@ -116,13 +117,13 @@ export function MultipleChoiceQuestion({
     <>
       <Card
         className={`mb-6 ${
-          isCorrect ? "border-green-500" : isIncorrect ? "border-red-500" : ""
+          isCorrected ? "border-green-500" : isIncorrect ? "border-red-500" : ""
         }`}>
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-medium">{question}</h3>
-              {isCorrect && <Check className="h-5 w-5 text-green-500" />}
+              {isCorrected && <Check className="h-5 w-5 text-green-500" />}
               {isIncorrect && <X className="h-5 w-5 text-red-500" />}
             </div>
             <Badge variant="outline" className="text-xs">
