@@ -25,7 +25,7 @@ export const TeamSection = () => {
   const teamList: TeamProps[] = [
     {
       imageUrl:
-        "https://media.licdn.com/dms/image/v2/D5603AQHQaFN6z8_WnQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1663607880574?e=1748476800&v=beta&t=vdp2XPsRo2MJACZMtbtBYSmWClBtgJhhMgtmYDse3Ww",
+        "https://media.licdn.com/dms/image/v2/D5603AQHQaFN6z8_WnQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1663607880574?e=1755129600&v=beta&t=iMRpNQJvJ-r_DXBZvpdA1CGO_SBrxXxuyAulWPGz6FQ",
       firstName: "Malay",
       lastName: "Kumar",
       positions: ["Developer"],
@@ -46,7 +46,7 @@ export const TeamSection = () => {
     },
     {
       imageUrl:
-        "https://media.licdn.com/dms/image/v2/D5603AQEUduVsUyTGsA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1722496615992?e=1748476800&v=beta&t=6Npcfk3cLeJgaDNC03QZZnSx8lW--dGDsppHP-BfmB8",
+        "https://media.licdn.com/dms/image/v2/D5603AQEUduVsUyTGsA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1722496616019?e=1755129600&v=beta&t=rvn8LTNg6Ai4YHglB2pKB8ih6fAQqjFL6t_N_rotlw4",
       firstName: "Ashiq",
       lastName: "Noor Sudheer",
       positions: ["Developer"],
@@ -63,7 +63,7 @@ export const TeamSection = () => {
     },
     {
       imageUrl:
-        "https://media.licdn.com/dms/image/v2/D5603AQHAJ5PbLpxayQ/profile-displayphoto-shrink_400_400/B56ZRzGD1wGsAo-/0/1737097756809?e=1748476800&v=beta&t=HINy3nfXSLV0bJaGfxW3KwRlA_lyqzS5Ao960RBGhWY",
+        "https://media.licdn.com/dms/image/v2/D5603AQHAJ5PbLpxayQ/profile-displayphoto-shrink_200_200/B56ZRzGD1wGsAg-/0/1737097756843?e=1755129600&v=beta&t=EL8vrnlDL_ytkqDVM5LEc9gkGlyTDddxxNN22U1l0uk",
       firstName: "Mathew",
       lastName: "Thomas Modisseril",
       positions: ["AI Engineer"],
