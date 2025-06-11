@@ -12,6 +12,7 @@ import { PlusCircle, Trash2, Edit, Save, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
@@ -42,6 +43,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ImagesSquare } from "@phosphor-icons/react/dist/ssr";
+import { QuestionGenerator } from "./question-generator";
 
 import { Question } from "@/types";
 
@@ -64,17 +66,28 @@ interface QuestionsFormProps {
   initialQuestions: Question[];
   onSubmit: (questions: Question[]) => void;
   onSaveProgress: () => void;
+  subject?: string;
+  assessmentDetails?: {
+    title?: string;
+    description?: string;
+    duration?: number;
+    totalMarks?: number;
+    passingPercentage?: number;
+  };
 }
 
 export function QuestionsForm({
   initialQuestions,
   onSubmit,
   onSaveProgress,
+  subject = "General",
+  assessmentDetails,
 }: QuestionsFormProps) {
   const [questions, setQuestions] = useState<Question[]>(
     initialQuestions || []
   );
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [useQGen, setUseQGen] = useState(false);
   const [optionInputs, setOptionInputs] = useState<
     { id: string; text: string }[]
   >([
@@ -138,25 +151,24 @@ export function QuestionsForm({
     ]);
     setImagePreview(null);
   };
-
   const handleEditQuestion = (question: Question) => {
-    setEditingId(null);
+    setEditingId(question.id);
     form.reset({
-      type: "SHORT_ANSWER",
-      text: "",
-      answer_type: "Text",
-      options: [],
-      image_url: "",
-      expected_answer: "",
+      type: question.type,
+      text: question.text,
+      answer_type: question.answer_type,
+      options: question.options || [],
+      image_url: question.image_url || "",
+      expected_answer: question.expected_answer || "",
     } as z.infer<typeof questionSchema>);
-    setOptionInputs([
-      { id: "0", text: "" },
-      { id: "1", text: "" },
-      { id: "2", text: "" },
-      { id: "3", text: "" },
-    ]);
-    setImagePreview(null);
-    setOptionInputs(question.options || []);
+    setOptionInputs(
+      question.options || [
+        { id: "0", text: "" },
+        { id: "1", text: "" },
+        { id: "2", text: "" },
+        { id: "3", text: "" },
+      ]
+    );
     setImagePreview(question.image_url || null);
   };
 
@@ -256,151 +268,103 @@ export function QuestionsForm({
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-
+  const handleAddGeneratedQuestion = (question: Question) => {
+    setQuestions([...questions, question]);
+  };
   return (
     <div className="space-y-8">
-      <Form {...form}>
-        <form
-          id="question-form"
-          onSubmit={form.handleSubmit(handleAddQuestion)}
-          className="space-y-6 border rounded-lg p-6">
-          <h3 className="text-lg font-medium">
-            {editingId ? "Edit Question" : "Add New Question"}
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Question Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select question type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="SHORT_ANSWER">Short Answer</SelectItem>
-                      <SelectItem value="LONG_ANSWER">Long Answer</SelectItem>
-                      <SelectItem value="MCQ">Multiple Choice (MCQ)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="answer_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Answer Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select answer type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Text">Text</SelectItem>
-                      <SelectItem value="Image">Image</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="text"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Question Text</FormLabel>
-                <div className="space-y-2">
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {[
-                      { symbol: "π", label: "Pi" },
-                      { symbol: "√", label: "Square Root" },
-                      { symbol: "∑", label: "Summation" },
-                      { symbol: "∫", label: "Integral" },
-                      { symbol: "±", label: "Plus-Minus" },
-                      { symbol: "∞", label: "Infinity" },
-                      { symbol: "θ", label: "Theta" },
-                      { symbol: "Δ", label: "Delta" },
-                    ].map((item) => (
-                      <TooltipProvider key={item.symbol}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                const textarea = document.getElementById(
-                                  "question-text"
-                                ) as HTMLTextAreaElement;
-                                if (textarea) {
-                                  const start = textarea.selectionStart;
-                                  const end = textarea.selectionEnd;
-                                  const text = field.value;
-                                  const newText =
-                                    text.substring(0, start) +
-                                    item.symbol +
-                                    text.substring(end);
-                                  field.onChange(newText);
-
-                                  // Set cursor position after the inserted symbol
-                                  setTimeout(() => {
-                                    textarea.focus();
-                                    textarea.setSelectionRange(
-                                      start + item.symbol.length,
-                                      start + item.symbol.length
-                                    );
-                                  }, 0);
-                                }
-                              }}>
-                              {item.symbol}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{item.label}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  </div>
-                  <FormControl>
-                    <Textarea
-                      id="question-text"
-                      placeholder="Enter your question here (you can use math symbols from the toolbar above)"
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-medium">Add Questions</h3>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-muted-foreground">
+            AI Question Generator
+          </span>
+          <Switch
+            checked={useQGen}
+            onCheckedChange={setUseQGen}
+            id="qgen-mode"
           />
+        </div>
+      </div>
 
-          {questionType !== "MCQ" && (
+      {useQGen ? (
+        <QuestionGenerator
+          onAddQuestion={handleAddGeneratedQuestion}
+          subject={subject}
+          assessmentDetails={assessmentDetails}
+        />
+      ) : (
+        <Form {...form}>
+          <form
+            id="question-form"
+            onSubmit={form.handleSubmit(handleAddQuestion)}
+            className="space-y-6 border rounded-lg p-6">
+            <h3 className="text-lg font-medium">
+              {editingId ? "Edit Question" : "Add New Question"}
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Question Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select question type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="SHORT_ANSWER">
+                          Short Answer
+                        </SelectItem>
+                        <SelectItem value="LONG_ANSWER">Long Answer</SelectItem>
+                        <SelectItem value="MCQ">
+                          Multiple Choice (MCQ)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="answer_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Answer Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select answer type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Text">Text</SelectItem>
+                        <SelectItem value="Image">Image</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name="expected_answer"
+              name="text"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Expected Answer</FormLabel>
+                  <FormLabel>Question Text</FormLabel>
                   <div className="space-y-2">
-                    {/* Math symbol toolbar, similar to question text */}
                     <div className="flex flex-wrap gap-2 mb-2">
                       {[
                         { symbol: "π", label: "Pi" },
@@ -421,18 +385,19 @@ export function QuestionsForm({
                                 size="sm"
                                 onClick={() => {
                                   const textarea = document.getElementById(
-                                    "expected-answer"
+                                    "question-text"
                                   ) as HTMLTextAreaElement;
                                   if (textarea) {
                                     const start = textarea.selectionStart;
                                     const end = textarea.selectionEnd;
                                     const text = field.value;
                                     const newText =
-                                      text?.substring(0, start) +
+                                      text.substring(0, start) +
                                       item.symbol +
-                                      text?.substring(end);
+                                      text.substring(end);
                                     field.onChange(newText);
 
+                                    // Set cursor position after the inserted symbol
                                     setTimeout(() => {
                                       textarea.focus();
                                       textarea.setSelectionRange(
@@ -454,9 +419,9 @@ export function QuestionsForm({
                     </div>
                     <FormControl>
                       <Textarea
-                        id="expected-answer"
-                        placeholder="Enter the expected answer"
-                        className="min-h-[80px]"
+                        id="question-text"
+                        placeholder="Enter your question here (you can use math symbols from the toolbar above)"
+                        className="min-h-[100px]"
                         {...field}
                       />
                     </FormControl>
@@ -465,188 +430,266 @@ export function QuestionsForm({
                 </FormItem>
               )}
             />
-          )}
 
-          {questionType === "MCQ" && (
-            <FormField
-              control={form.control}
-              name="options"
-              render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Answer Options</FormLabel>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleAddOption}
-                      className="flex items-center gap-1">
-                      <PlusCircle className="h-4 w-4" /> Add Choice
-                    </Button>
-                  </div>
-
-                  <FormControl>
+            {questionType !== "MCQ" && (
+              <FormField
+                control={form.control}
+                name="expected_answer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expected Answer</FormLabel>
                     <div className="space-y-2">
-                      {optionInputs.map((option, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <Input
-                            value={option.text}
-                            onChange={(e) => {
-                              handleOptionChange(index, e.target.value);
-                              // Update the form field value
-                              const newOptions = [...optionInputs];
-                              newOptions[index].text = e.target.value;
-                              field.onChange(
-                                newOptions.filter((c) => c.text.trim() !== "")
-                              );
-                            }}
-                            placeholder={`Choice ${index + 1}`}
-                            className="flex-1"
-                          />
-                          {optionInputs.length > 2 && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                handleRemoveOption(index);
-                                // Update the form field value after removing a choice
+                      {/* Math symbol toolbar, similar to question text */}
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {[
+                          { symbol: "π", label: "Pi" },
+                          { symbol: "√", label: "Square Root" },
+                          { symbol: "∑", label: "Summation" },
+                          { symbol: "∫", label: "Integral" },
+                          { symbol: "±", label: "Plus-Minus" },
+                          { symbol: "∞", label: "Infinity" },
+                          { symbol: "θ", label: "Theta" },
+                          { symbol: "Δ", label: "Delta" },
+                        ].map((item) => (
+                          <TooltipProvider key={item.symbol}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const textarea = document.getElementById(
+                                      "expected-answer"
+                                    ) as HTMLTextAreaElement;
+                                    if (textarea) {
+                                      const start = textarea.selectionStart;
+                                      const end = textarea.selectionEnd;
+                                      const text = field.value;
+                                      const newText =
+                                        text?.substring(0, start) +
+                                        item.symbol +
+                                        text?.substring(end);
+                                      field.onChange(newText);
+
+                                      setTimeout(() => {
+                                        textarea.focus();
+                                        textarea.setSelectionRange(
+                                          start + item.symbol.length,
+                                          start + item.symbol.length
+                                        );
+                                      }, 0);
+                                    }
+                                  }}>
+                                  {item.symbol}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{item.label}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        ))}
+                      </div>
+                      <FormControl>
+                        <Textarea
+                          id="expected-answer"
+                          placeholder="Enter the expected answer"
+                          className="min-h-[80px]"
+                          {...field}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {questionType === "MCQ" && (
+              <FormField
+                control={form.control}
+                name="options"
+                render={({ field }) => (
+                  <FormItem className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Answer Options</FormLabel>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddOption}
+                        className="flex items-center gap-1">
+                        <PlusCircle className="h-4 w-4" /> Add Choice
+                      </Button>
+                    </div>
+
+                    <FormControl>
+                      <div className="space-y-2">
+                        {optionInputs.map((option, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <Input
+                              value={option.text}
+                              onChange={(e) => {
+                                handleOptionChange(index, e.target.value);
+                                // Update the form field value
                                 const newOptions = [...optionInputs];
-                                newOptions.splice(index, 1);
+                                newOptions[index].text = e.target.value;
                                 field.onChange(
                                   newOptions.filter((c) => c.text.trim() !== "")
                                 );
-                              }}>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          {questionType === "MCQ" && (
-            <FormField
-              control={form.control}
-              name="expected_answer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Expected Answer</FormLabel>
-                  <FormControl>
-                    <div className="flex flex-col  gap-2">
-                      {optionInputs.map((option, idx) => (
-                        <label
-                          key={option.id}
-                          className="flex items-center gap-2 cursor-pointer">
-                          <span>
-                            {String.fromCharCode(97 + idx) + "."} {option.text}
-                          </span>
-                          <Input
-                            type="radio"
-                            name="expected_answer"
-                            value={option.id}
-                            checked={field.value === option.id}
-                            onChange={() => field.onChange(option.id)}
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          {answer_type === "Image" && (
-            <FormField
-              control={form.control}
-              name="image_url"
-              render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel>Image Upload</FormLabel>
-                  <FormControl>
-                    <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 bg-muted/50">
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleImageUpload}
-                        accept="image/*"
-                        className="hidden"
-                      />
-
-                      {imagePreview ? (
-                        <div className="space-y-4 w-full">
-                          <div className="relative aspect-video w-full max-h-[200px] overflow-hidden rounded-lg">
-                            <Image
-                              src={imagePreview || "/placeholder.svg"}
-                              alt="Preview"
-                              className="object-contain w-full h-full"
+                              }}
+                              placeholder={`Choice ${index + 1}`}
+                              className="flex-1"
                             />
+                            {optionInputs.length > 2 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  handleRemoveOption(index);
+                                  // Update the form field value after removing a choice
+                                  const newOptions = [...optionInputs];
+                                  newOptions.splice(index, 1);
+                                  field.onChange(
+                                    newOptions.filter(
+                                      (c) => c.text.trim() !== ""
+                                    )
+                                  );
+                                }}>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
-                          <div className="flex justify-center gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={triggerFileInput}>
-                              Change Image
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                setImagePreview(null);
-                                field.onChange("");
-                              }}>
-                              Remove
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center gap-2">
-                          <ImagesSquare className="h-10 w-10 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">
-                            Drag and drop an image, or click to browse
-                          </p>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={triggerFileInput}
-                            className="mt-2">
-                            <Upload className="h-4 w-4 mr-2" /> Upload Image
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
-
-          <div className="flex justify-end gap-2">
-            {editingId && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancelEdit}>
-                Cancel
-              </Button>
+                        ))}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-            <Button type="submit">
-              {editingId ? "Update Question" : "Add Question"}
-            </Button>
-          </div>
-        </form>
-      </Form>
+
+            {questionType === "MCQ" && (
+              <FormField
+                control={form.control}
+                name="expected_answer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expected Answer</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col  gap-2">
+                        {optionInputs.map((option, idx) => (
+                          <label
+                            key={option.id}
+                            className="flex items-center gap-2 cursor-pointer">
+                            <span>
+                              {String.fromCharCode(97 + idx) + "."}{" "}
+                              {option.text}
+                            </span>
+                            <Input
+                              type="radio"
+                              name="expected_answer"
+                              value={option.id}
+                              checked={field.value === option.id}
+                              onChange={() => field.onChange(option.id)}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {answer_type === "Image" && (
+              <FormField
+                control={form.control}
+                name="image_url"
+                render={({ field }) => (
+                  <FormItem className="space-y-4">
+                    <FormLabel>Image Upload</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 bg-muted/50">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleImageUpload}
+                          accept="image/*"
+                          className="hidden"
+                        />
+
+                        {imagePreview ? (
+                          <div className="space-y-4 w-full">
+                            <div className="relative aspect-video w-full max-h-[200px] overflow-hidden rounded-lg">
+                              <Image
+                                src={imagePreview || "/placeholder.svg"}
+                                alt="Preview"
+                                className="object-contain w-full h-full"
+                              />
+                            </div>
+                            <div className="flex justify-center gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={triggerFileInput}>
+                                Change Image
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  setImagePreview(null);
+                                  field.onChange("");
+                                }}>
+                                Remove
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <ImagesSquare className="h-10 w-10 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              Drag and drop an image, or click to browse
+                            </p>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={triggerFileInput}
+                              className="mt-2">
+                              <Upload className="h-4 w-4 mr-2" /> Upload Image
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <div className="flex justify-end gap-2">
+              {editingId && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCancelEdit}>
+                  Cancel
+                </Button>
+              )}
+              <Button type="submit">
+                {editingId ? "Update Question" : "Add Question"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      )}
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -659,12 +702,13 @@ export function QuestionsForm({
             className="flex items-center gap-2">
             <Save className="h-4 w-4" /> Save Progress
           </Button>
-        </div>
-
+        </div>{" "}
         {questions.length === 0 ? (
           <div className="text-center p-8 border border-dashed rounded-lg">
             <p className="text-muted-foreground">
-              No questions added yet. Add your first question above.
+              {useQGen
+                ? "No questions added yet. Generate and select questions above."
+                : "No questions added yet. Add your first question above."}
             </p>
           </div>
         ) : (

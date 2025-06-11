@@ -229,6 +229,7 @@ export default function AssessmentFormPopup({
               initialQuestions={assessmentData.questions}
               onSubmit={handleStage2Submit}
               onSaveProgress={saveProgress}
+              assessmentDetails={assessmentData}
             />
           )}
           {currentStage === 3 && (
