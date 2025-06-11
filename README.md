@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Graxion - AI-Based Assessment & Feedback Platform
 
-## Getting Started
+Graxion is an intelligent platform designed to revolutionize how assessments are created, delivered, and analyzed. With cutting-edge AI capabilities, Graxion empowers educators to effortlessly generate, manage, and evaluate assessments—while providing students with personalized feedback, AI-generated video explanations, and curated learning resources.
 
-First, run the development server:
+---
+
+## 🎯 Key Highlights
+
+- ✍️ Manual, AI, and Hybrid Assessment Creation  
+- 🤖 Automated Grading & Feedback  
+- 📹 AI-Generated Video Explanations for Incorrect Answers  
+- 🧠 SWOT-Based Performance Insights  
+- 📚 Smart Resource Recommendations  
+- 💬 Upcoming AI Chatbot for Doubt Clarification  
+
+---
+
+## 🔧 Features
+
+### 👨‍🏫 For Teachers
+
+- Create assessments manually, using AI, or both  
+- Customize question type, difficulty, and topics  
+- Assign assessments to students  
+- Track performance and view SWOT analysis  
+
+### 👩‍🎓 For Students
+
+- Access assigned assessments and submit responses  
+- Receive instant, AI-evaluated scores  
+- Get personalized feedback for each question  
+- Watch custom AI-generated videos explaining incorrect answers  
+- Explore recommended YouTube videos and articles  
+- View SWOT analysis for continuous improvement  
+
+### 🧠 AI Engine (Powered by Gemini API)
+
+- Topic-wise, difficulty-based, and concept-tagged question generation  
+- Auto-grading of subjective and objective answers  
+- Personalized feedback generator  
+- AI-based explainer video creation  
+- Smart content recommendation system  
+
+---
+
+## ⚙️ Architecture Overview
+
+- **Frontend**: React.js (deployed on [Vercel](https://vercel.com/))  
+- **Backend + AI Services**: Node.js / Express (hosted on **Google Cloud Run**)  
+- **AI Integration**: Gemini LLMs for assessment generation and evaluation  
+- **Authentication**: Currently experimental (full system coming soon)  
+- **Database**: MongoDB / Firebase (as per deployment)  
+- **Resource API**: YouTube Data API + custom web scraping modules  
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Malay-dev/graxion.git
+cd graxion
+```
+### 2. Install Dependencies
+Frontend
+```bash
+cd client
+npm install
+```
+Backend
+```bash
+cd ../server
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Environment Setup
+Create .env files with the following variables:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+GEMINI_API_KEY
+YOUTUBE_API_KEY
+DB_URI
+PORT
+(Optional) AUTH_SECRET or Firebase credentials
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run the App Locally
+Frontend
+```bash
+cd client
+npm run dev
+```
+Backend
+```bash
+cd ../server
+npm run dev
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+### 🧪 Experimental Note
+Authentication system is currently under development.
+In future updates, users will be able to create secure accounts, manage personalized data, and experience full role-based access control.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+📄 License
+This project is licensed under the AGPL License.
