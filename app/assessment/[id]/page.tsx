@@ -25,7 +25,6 @@ import {
   Shield,
 } from "@phosphor-icons/react/dist/ssr";
 import Loading from "@/components/Loading";
-import { saveSwotAnalysis } from "@/lib/data/analysis";
 
 // Define the SWOT analysis interface
 interface SwotAnalysis {
@@ -71,7 +70,9 @@ type AssessmentData = {
 };
 
 // Component to display SWOT analysis
-const SwotAnalysisDisplay: React.FC<{ swotData: SwotAnalysis }> = ({ swotData }) => {
+const SwotAnalysisDisplay: React.FC<{ swotData: SwotAnalysis }> = ({
+  swotData,
+}) => {
   const swotCategories = [
     {
       key: "strengths",
@@ -108,18 +109,18 @@ const SwotAnalysisDisplay: React.FC<{ swotData: SwotAnalysis }> = ({ swotData })
             key={category.key}
             className="p-4 border rounded bg-background shadow-sm"
             role="region"
-            aria-labelledby={`${category.key}-heading`}
-          >
+            aria-labelledby={`${category.key}-heading`}>
             <div className="flex items-center mb-2">
               {category.icon}
               <h4
                 id={`${category.key}-heading`}
-                className="ml-2 text-md font-semibold text-foreground"
-              >
+                className="ml-2 text-md font-semibold text-foreground">
                 {category.label}
               </h4>
             </div>
-            <p className="text-sm text-muted-foreground">{category.description}</p>
+            <p className="text-sm text-muted-foreground">
+              {category.description}
+            </p>
           </div>
         ))}
       </div>
@@ -572,14 +573,13 @@ const Assessment = () => {
                 </div>
                 <AlertDialog
                   open={showSubmitDialog}
-                  onOpenChange={setShowSubmitDialog}
-                >
+                  onOpenChange={setShowSubmitDialog}>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Submit Assessment</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to submit your assessment? You have
-                        answered {questionsAnswered} out of{" "}
+                        Are you sure you want to submit your assessment? You
+                        have answered {questionsAnswered} out of{" "}
                         {assessment_data.questions.length} questions.
                         {questionsAnswered <
                           assessment_data.questions.length && (

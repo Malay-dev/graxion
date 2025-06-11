@@ -93,7 +93,9 @@ export default function AssessmentCard({
               <CardTitle className="text-xl font-bold text-nowrap text-ellipsis overflow-hidden max-w-[200px]">
                 {title}
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">ID: {id}</p>
+              <p className="text-sm text-muted-foreground mt-1 text-nowrap text-ellipsis overflow-hidden max-w-[200px]">
+                ID: {id}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Badge
