@@ -45,7 +45,7 @@ Graxion is an intelligent platform designed to revolutionize how assessments are
 
 ## ⚙️ Architecture Overview
 
-- **Frontend**: React.js (deployed on [Vercel](https://vercel.com/))  
+- **Frontend**: React.js (deployed on [Vercel]([https://vercel.com/](https://graxion.vercel.app/)))  
 - **Backend + AI Services**: Node.js / Express (hosted on **Google Cloud Run**)  
 - **AI Integration**: Gemini LLMs for assessment generation and evaluation  
 - **Authentication**: Currently experimental (full system coming soon)  
