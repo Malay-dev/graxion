@@ -47,7 +47,7 @@ export const FooterSection = () => {
         <Separator className="my-6" />
         <section className="text-center text-sm">
           <h3>
-            &copy; 2024 Designed and developed by
+            &copy; 2025 Designed and developed by
             <Link
               target="_blank"
               href="https://github.com/leoMirandaa"
