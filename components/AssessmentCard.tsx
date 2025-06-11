@@ -174,19 +174,17 @@ export default function AssessmentCard({
             <span className="text-muted-foreground">Max Score: </span>
             <span className="font-medium">{max_score}</span>
           </div>
-            <button
+          <button
             onClick={(e) => {
               e.preventDefault();
               setOpenDialog(true);
             }}
-            className="hover:text-red-600 transition-colors"
-            title="Delete Assessment"
-          >
+            className="hover:text-red-600 transition-colors cursor-pointer"
+            title="Delete Assessment">
             {role === "teacher" ? (
               <Trash2Icon className="h-4 w-4 text-muted-foreground" />
             ) : null}
           </button>
-
         </CardFooter>
       </Card>
 

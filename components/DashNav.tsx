@@ -2,6 +2,8 @@ import React from "react";
 import { ToggleTheme } from "./layout/toggle-theme";
 import TeamSwitcher from "./TeamSwitcher";
 import { UserNav } from "./UserNav";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const DashNav = () => {
   return (
@@ -11,6 +13,9 @@ const DashNav = () => {
           <ToggleTheme />
           <TeamSwitcher />
           <div className="ml-auto flex items-center space-x-4">
+            <Button variant="outline">
+              <Link href="/">Go to home</Link>
+            </Button>
             <UserNav />
           </div>
         </div>

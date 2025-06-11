@@ -454,9 +454,7 @@ const Assessment = () => {
                   <div className="h-screen">
                     {assessment_data.questions.map((question, index) => {
                       const isAnswered = completionStatus[question.id] === true;
-                      const isCorrect =
-                        completionStatus[question.id] === true &&
-                        correctness[question.id] === true;
+
                       return (
                         <div key={question.id} className="mb-8">
                           <div className="flex items-center mb-2">
@@ -466,7 +464,7 @@ const Assessment = () => {
                             <div className="text-sm text-muted-foreground">
                               {isAnswered || isSubmitted ? (
                                 isSubmitted && isEvaluated ? (
-                                  isCorrect ? (
+                                  correctness[question.id] ? (
                                     <span className="flex items-center text-green-600">
                                       <CheckCircle className="h-4 w-4 mr-1" />
                                       Correct Answer
@@ -507,6 +505,7 @@ const Assessment = () => {
                               }
                               isSubmitted={isSubmitted}
                               isEvaluated={isEvaluated}
+                              isCorrect={correctness[question.id]}
                               showCorrectAnswer={isSubmitted && isEvaluated}
                               onAnswerChange={(answer) =>
                                 handleAnswerChange(question.id, answer)
@@ -529,6 +528,7 @@ const Assessment = () => {
                               }
                               isSubmitted={isSubmitted}
                               isEvaluated={isEvaluated}
+                              isCorrect={correctness[question.id]}
                               showCorrectAnswer={isSubmitted && isEvaluated}
                               onAnswerChange={(answer) =>
                                 handleAnswerChange(question.id, answer)
@@ -555,6 +555,7 @@ const Assessment = () => {
                               answer={question?.answer}
                               isSubmitted={isSubmitted}
                               isEvaluated={isEvaluated}
+                              isCorrect={correctness[question.id]}
                               showCorrectAnswer={isSubmitted && isEvaluated}
                               onAnswerChange={(answer) =>
                                 handleAnswerChange(question.id, answer)
@@ -569,6 +570,7 @@ const Assessment = () => {
                         </div>
                       );
                     })}
+                    {swotData && <SwotAnalysisDisplay swotData={swotData} />}
                   </div>
                 </div>
                 <AlertDialog
@@ -600,8 +602,6 @@ const Assessment = () => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-
-                {swotData && <SwotAnalysisDisplay swotData={swotData} />}
               </div>
             </TabsContent>
           </div>

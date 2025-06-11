@@ -28,6 +28,7 @@ interface ShortAnswerQuestionProps {
   showCorrectAnswer?: boolean;
   isSubmitted?: boolean;
   isEvaluated?: boolean;
+  isCorrect?: boolean;
   imageTypeAnswer?: boolean;
   onAnswerChange?: (answer: string) => void;
   onImageUpload?: (imageUrl: string) => void;
@@ -47,6 +48,7 @@ export function ShortAnswerQuestion({
   answer,
   isSubmitted = false,
   isEvaluated = false,
+  isCorrect = false,
   imageTypeAnswer,
   onAnswerChange,
   onImageUpload,
@@ -63,10 +65,7 @@ export function ShortAnswerQuestion({
   } | null>(null);
   console.log("ShortAnswerQuestion : id", id);
   console.log(answer);
-  const isCorrect =
-    isSubmitted &&
-    isEvaluated &&
-    currentAnswer.toLowerCase().trim() === expected_answer.toLowerCase().trim();
+  const isCorrected = isSubmitted && isEvaluated && isCorrect;
   const isIncorrect = isSubmitted && isEvaluated && currentAnswer && !isCorrect;
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -139,13 +138,13 @@ export function ShortAnswerQuestion({
       <Card
         className={cn(
           "mb-6 transition-all duration-200",
-          isCorrect ? "border-green-500" : isIncorrect ? "border-red-500" : ""
+          isCorrected ? "border-green-500" : isIncorrect ? "border-red-500" : ""
         )}>
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-medium">{question}</h3>
-              {isCorrect && <Check className="h-5 w-5 text-green-500" />}
+              {isCorrected && <Check className="h-5 w-5 text-green-500" />}
               {isIncorrect && <X className="h-5 w-5 text-red-500" />}
             </div>
             <Badge variant="outline" className="text-xs">
