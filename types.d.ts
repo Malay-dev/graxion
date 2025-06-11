@@ -9,6 +9,7 @@ export type Question = {
     text: string;
   }[];
   expected_answer: string;
+  isCorrect?: boolean;
   answer?: string;
   marks: number;
   resources?: {
